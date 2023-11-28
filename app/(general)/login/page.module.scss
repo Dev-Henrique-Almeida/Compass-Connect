@@ -1,0 +1,71 @@
+.main {
+  background: #17181c;
+  color: white;
+  font-family: "Montserrat";
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.whiteBorder {
+  border-color: #ffffff !important;
+  border-radius: 35px !important;
+}
+
+.whiteLabel {
+  color: white !important;
+  &.Mui-focused {
+    color: white !important;
+  }
+}
+
+.buttonLogin {
+  background: linear-gradient(45deg, #ad2d14 30%, #f42e07 90%);
+  color: #ffffff;
+  border-radius: 35px;
+  height: 55px;
+  margin-top: 15px;
+  font-size: 12px;
+  text-transform: none;
+  font-weight: bold;
+  transition: color 0.3s;
+
+  &:hover {
+    color: gray;
+  }
+}
+
+.buttonLogin:hover {
+  color: gray;
+}
+
+.parentContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.loginContainer {
+  padding: 10px;
+}
+
+.loginLink {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  &:hover {
+    color: gray;
+  }
+}
+
+.loginLink:hover {
+  color: #f42e07;
+}
+
+.errorBorder {
+  border-color: #e9b425 !important;
+  border-radius: 35px !important;
+}
