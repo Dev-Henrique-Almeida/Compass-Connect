@@ -129,12 +129,12 @@ export default function ContentLogin() {
               elevation={0}
               className={styles.main}
               sx={{
-                marginBottom: 20,
-                marginRight: 20,
-                marginLeft: 20,
-                marginTop: 10,
-                padding: 3,
-                maxWidth: 400,
+                marginBottom: { xs: "160px", sm: "20px" },
+                marginRight: { xs: "160px", sm: "20px" },
+                marginLeft: { xs: 0, sm: "220px" },
+                marginTop: { xs: "120px", sm: "140px" },
+                padding: { xs: "24px", sm: "3" },
+                maxWidth: { xs: "300px", sm: "400px" },
               }}
             >
               <Typography variant="h2" gutterBottom>
