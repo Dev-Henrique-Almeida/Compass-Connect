@@ -264,21 +264,37 @@ export default function ContentRegister() {
         <Grid className={styles.main} container>
           <Grid className={styles.main} item sm={6} style={{}}>
             <Paper
-              className={styles.main}
               elevation={0}
               sx={{
                 marginBottom: { xs: "160px", sm: "20px" },
                 marginRight: { xs: "160px", sm: "20px" },
                 marginLeft: { xs: 0, sm: "260px" },
-                marginTop: { xs: "-10px", sm: "30px" },
+                marginTop: { xs: "-10px", sm: "60px" },
                 padding: { xs: "24px", sm: "3" },
                 maxWidth: { xs: "342px", sm: "400px" },
+                color: "white",
+                width: "100vw",
+                height: "100vh",
+                overflow: "hidden",
+                background: "transparent",
               }}
             >
-              <Typography variant="h2" gutterBottom>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontWeight: "450",
+                }}
+                gutterBottom
+              >
                 Olá,
               </Typography>
-              <Typography variant="subtitle2" gutterBottom>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: "200",
+                }}
+                gutterBottom
+              >
                 Por favor, registre-se para continuar.
               </Typography>
               <Typography
@@ -480,6 +496,7 @@ export default function ContentRegister() {
                     endAdornment: (
                       <InputAdornment position="end">
                         <img
+                          className={styles.cursorButton}
                           src={showPassword ? senhaOpenIcon.src : senhaIcon.src}
                           alt="Senha Icon"
                           style={{
@@ -526,6 +543,7 @@ export default function ContentRegister() {
                     endAdornment: (
                       <InputAdornment position="end">
                         <img
+                          className={styles.cursorButton}
                           src={
                             showConfirmPassword
                               ? senhaOpenIcon.src

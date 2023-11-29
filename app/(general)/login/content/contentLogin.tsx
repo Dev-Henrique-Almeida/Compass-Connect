@@ -126,7 +126,6 @@ export default function ContentLogin() {
           <Grid className={styles.main} item sm={6} style={{ padding: 20 }}>
             <Paper
               elevation={0}
-              className={styles.main}
               sx={{
                 marginBottom: { xs: "160px", sm: "20px" },
                 marginRight: { xs: "160px", sm: "20px" },
@@ -134,12 +133,29 @@ export default function ContentLogin() {
                 marginTop: { xs: "120px", sm: "140px" },
                 padding: { xs: "24px", sm: "3" },
                 maxWidth: { xs: "300px", sm: "400px" },
+                color: "white",
+                width: "100vw",
+                height: "100vh",
+                overflow: "hidden",
+                background: "transparent",
               }}
             >
-              <Typography variant="h2" gutterBottom>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontWeight: "450",
+                }}
+                gutterBottom
+              >
                 Olá,
               </Typography>
-              <Typography variant="subtitle2" gutterBottom>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontWeight: "200",
+                }}
+                gutterBottom
+              >
                 Para continuar navegando de forma segura, efetue o login.
               </Typography>
               <Typography
@@ -221,6 +237,7 @@ export default function ContentLogin() {
                     endAdornment: (
                       <InputAdornment position="end">
                         <img
+                          className={styles.cursorButton}
                           src={showPassword ? senhaOpenIcon.src : senhaIcon.src}
                           alt="Senha Icon"
                           style={{

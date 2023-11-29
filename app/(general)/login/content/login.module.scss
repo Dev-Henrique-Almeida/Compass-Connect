@@ -1,5 +1,5 @@
 .main {
-  background: #17181c;
+  background: linear-gradient(180deg, #2e2f36 0%, #17181c 100%);
   color: white;
   font-family: "Montserrat";
   width: 100vw;
@@ -17,6 +17,10 @@
   &.Mui-focused {
     color: white !important;
   }
+}
+
+.cursorButton {
+  cursor: pointer;
 }
 
 .buttonLogin {
