@@ -12,7 +12,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           margin: 0,
           backgroundColor:
             "background: linear-gradient(180deg, #2e2f36 0%, #17181c 100%)",
-          blockSize: "100%",
+          blockSize: "110%",
         }}
       >
         {children}
