@@ -379,7 +379,7 @@ export default function ContentRegister() {
                   }}
                 />
                 <TextField
-                  label="Nascimento"
+                  label="Data de Nascimento"
                   fullWidth
                   margin="dense"
                   value={nascimento}
