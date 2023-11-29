@@ -185,7 +185,7 @@ export default function ContentRegister() {
     }
 
     /* Validações para a data de nascimento */
-    let formattedDate = ""; // Adiciona isso fora do if
+    let formattedDate = "";
     if (!nascimento) {
       setErrors((errors) => ({
         ...errors,
@@ -244,10 +244,10 @@ export default function ContentRegister() {
         if (response.ok) {
           router.push("/home");
         } else {
-          console.error("Register failed");
+          console.error("Registro Falhou");
         }
       } catch (error) {
-        console.error("An error occurred:", error);
+        console.error("Ocorreu um erro:", error);
       }
       console.log(formattedDate);
     }

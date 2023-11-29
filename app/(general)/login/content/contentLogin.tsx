@@ -109,9 +109,8 @@ export default function ContentLogin() {
           isValid = false;
         }
       } catch (error) {
-        console.error("An error occurred:", error);
+        console.error("Ocorreu um erro: ", error);
       }
-      console.log(username, password);
     }
   };
 
