@@ -29,7 +29,8 @@ const ContentInfo = () => {
           display: "flex",
           justifyContent: "center",
           p: isMobile ? 1 : 4,
-          ml: isMobile ? 0 : -195,
+          /*           ml: isMobile ? 0 : -195,
+           */
         }}
       >
         <Card
@@ -39,6 +40,8 @@ const ContentInfo = () => {
             borderRadius: 4,
             height: 400,
             border: "2px solid #97979b",
+            color: "white",
+
             background: "linear-gradient(0deg, #1E1F23, #2E2F36)",
           }}
           elevation={5}
@@ -141,6 +144,34 @@ const ContentInfo = () => {
             <Typography variant="subtitle1">(33) 75700-5467</Typography>
           </Box>
         </Card>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            mt: 2,
+            ml: 30,
+            width: " 20%",
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            sx={{ fontSize: 20, fontWeight: "200" }}
+          >
+            Followers
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontSize: 20, fontWeight: "200" }}
+          >
+            Following
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontSize: 20, fontWeight: "bold" }}
+          >
+            Posts
+          </Typography>
+        </Box>
       </Box>
     </ThemeProvider>
   );

@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./contentProfile.module.scss";
 import dataIcon from "@/public/icons/nascimento.png";
 import nomeIcon from "@/public/icons/nome.png";
@@ -22,6 +22,20 @@ import telefoneIcon from "@/public/icons/telefone.png";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
+
+interface UserResponse {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  birthdate: string;
+  image: string;
+  sex: string;
+  address: string;
+  phone: string;
+  occupation: string;
+}
 
 interface ProfileModalProps {
   open: boolean;
@@ -39,18 +53,19 @@ const SlideTransition = React.forwardRef(function Transition(
 
 const getUserInfo = async () => {
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("id");
   if (token && userId) {
     try {
       const response = await fetch(`http://localhost:3001/users/${userId}`, {
         headers: {
+          "Content-Type": "application/json",
+
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Processar e armazenar as informações do usuário
         return data;
       }
     } catch (error) {
@@ -78,25 +93,23 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     url: "",
   });
 
-  React.useEffect(() => {
-    const fetchUserData = async () => {
-      if (open) {
-        const userInfo = await getUserInfo();
-        if (userInfo) {
-          setNome(userInfo.nome || "");
-          setCargo(userInfo.cargo || "");
-          setSexo(userInfo.sexo || "");
-          setNascimento(userInfo.nascimento || "");
-          setEndereco(userInfo.endereco || "");
-          setTelefone(userInfo.telefone || "");
-          setUrl(userInfo.url || "");
-          setId(userInfo.id || "");
-        }
+  useEffect(() => {
+    const fetchData = async () => {
+      const userInfo = await getUserInfo();
+      if (userInfo) {
+        setNome(userInfo.name);
+        setCargo(userInfo.occupation);
+        setSexo(userInfo.sex);
+        setNascimento(new Date(userInfo.birthdate).toLocaleDateString("pt-BR"));
+        setEndereco(userInfo.address);
+        setTelefone(userInfo.phone);
+        setUrl(userInfo.image);
+        setId(userInfo.id);
       }
     };
 
-    fetchUserData();
-  }, [open]);
+    fetchData();
+  });
 
   const router = useRouter();
 
@@ -303,11 +316,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
 
     if (isValid) {
       try {
-        const response = await fetch(`http://localhost:3001/users/${id}`, {
+        const userId = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
+        const response = await fetch(`http://localhost:3001/users/${userId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             name: nome,
@@ -323,6 +338,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         if (response.ok) {
           router.push("/home");
         } else {
+          /*         console.log("ID:    " + userId);
+          console.log("TOKEN:    " + token); */
           console.error("Update Falhou");
         }
       } catch (error) {

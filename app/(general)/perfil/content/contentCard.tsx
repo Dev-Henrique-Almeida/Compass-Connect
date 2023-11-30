@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Card,
@@ -25,9 +25,48 @@ const theme = createTheme({
   },
 });
 
+const getUserInfo = async () => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
+  if (token && userId) {
+    try {
+      const response = await fetch(`http://localhost:3001/users/${userId}`, {
+        headers: {
+          "Content-Type": "application/json",
+
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch (error) {
+      console.error("Erro ao obter informações do usuário:", error);
+    }
+  }
+};
+
 export default function MyPerfil() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [nome, setNome] = useState("");
+  const [cargo, setCargo] = useState("");
+  const [avatar, setAvatar] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userInfo = await getUserInfo();
+      if (userInfo) {
+        setNome(userInfo.name);
+        setCargo(userInfo.occupation);
+        setAvatar(userInfo.image);
+      }
+    };
+
+    fetchData();
+  }, [open]);
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -55,7 +94,7 @@ export default function MyPerfil() {
           />
           <Avatar
             alt="Imagem do Perfil"
-            src=""
+            src={avatar}
             sx={{
               width: isMobile ? 150 : 180,
               height: isMobile ? 150 : 180,
@@ -89,13 +128,13 @@ export default function MyPerfil() {
                 sx={{
                   fontWeight: "600",
                   wordBreak: "break-word",
-                  fontSize: isMobile ? 21 : 34,
+                  fontSize: isMobile ? 21 : 30,
                 }}
               >
-                Eduarda Pereira
+                {nome}
               </Typography>
 
-              <Typography variant="subtitle1">UI/UX Designer</Typography>
+              <Typography variant="subtitle1">{cargo}</Typography>
             </Box>
             <div>
               <Button
@@ -103,7 +142,7 @@ export default function MyPerfil() {
                 className={styles.buttonEdit}
                 onClick={() => setIsModalOpen(true)}
                 sx={{
-                  ml: isMobile ? -43 : 130,
+                  ml: isMobile ? -43 : 120,
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#FFFFFF")}

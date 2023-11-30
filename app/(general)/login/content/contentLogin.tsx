@@ -102,10 +102,10 @@ export default function ContentLogin() {
 
           const data = await response.json();
           const token = data.token;
-          const userId = data.userId;
+          const userId = data.user.id;
 
           localStorage.setItem("token", token);
-          localStorage.setItem("userId", userId);
+          localStorage.setItem("id", userId);
           router.push("/home");
         } else {
           setErrors((errors) => ({
