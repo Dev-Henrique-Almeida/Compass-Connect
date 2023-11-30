@@ -98,6 +98,14 @@ export default function ContentLogin() {
         });
 
         if (response.ok) {
+          /* Setando o token */
+
+          const data = await response.json();
+          const token = data.token;
+          const userId = data.userId;
+
+          localStorage.setItem("token", token);
+          localStorage.setItem("userId", userId);
           router.push("/home");
         } else {
           setErrors((errors) => ({

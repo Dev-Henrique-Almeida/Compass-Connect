@@ -37,6 +37,28 @@ const SlideTransition = React.forwardRef(function Transition(
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
+const getUserInfo = async () => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+  if (token && userId) {
+    try {
+      const response = await fetch(`http://localhost:3001/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Processar e armazenar as informações do usuário
+        return data;
+      }
+    } catch (error) {
+      console.error("Erro ao obter informações do usuário:", error);
+    }
+  }
+};
+
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
   const [nome, setNome] = useState("");
   const [cargo, setCargo] = useState("");
@@ -45,6 +67,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
   const [endereco, setEndereco] = useState("");
   const [telefone, setTelefone] = useState("");
   const [url, setUrl] = useState("");
+  const [id, setId] = useState("");
   const [errors, setErrors] = useState({
     nome: "",
     cargo: "",
@@ -54,6 +77,26 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     telefone: "",
     url: "",
   });
+
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      if (open) {
+        const userInfo = await getUserInfo();
+        if (userInfo) {
+          setNome(userInfo.nome || "");
+          setCargo(userInfo.cargo || "");
+          setSexo(userInfo.sexo || "");
+          setNascimento(userInfo.nascimento || "");
+          setEndereco(userInfo.endereco || "");
+          setTelefone(userInfo.telefone || "");
+          setUrl(userInfo.url || "");
+          setId(userInfo.id || "");
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [open]);
 
   const router = useRouter();
 
@@ -260,32 +303,27 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
 
     if (isValid) {
       try {
-        const response = await fetch("http://localhost:3001/auth/register", {
-          method: "POST",
+        const response = await fetch(`http://localhost:3001/users/${id}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-
-            "User-Agent": "PostmanRuntime/7.35.0",
-            Accept: "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            Connection: "keep-alive",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             name: nome,
-            cargo,
-            sexo,
+            occupation: cargo,
+            sex: sexo,
             birthdate: formattedDate,
-            endereco,
-            telefone,
-            nome,
+            address: endereco,
+            phone: telefone,
+            image: url,
           }),
         });
 
         if (response.ok) {
           router.push("/home");
         } else {
-          console.error("Registro Falhou");
+          console.error("Update Falhou");
         }
       } catch (error) {
         console.error("Ocorreu um erro:", error);
@@ -309,7 +347,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         onClose={onClose}
         sx={{
           top: "8%",
-          left: isMobile ? "fit-content" : "40%",
+          left: isMobile ? "fit-content" : "37.5%",
           width: isMobile ? "fit-content" : "400px",
         }}
       >
@@ -605,7 +643,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                 }}
               />
               <TextField
-                label="Imagem de perfil (URL ou base64)"
+                label="Imagem de perfil (URL)"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 fullWidth
@@ -649,9 +687,15 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                   },
                 }}
               />
-              <Button type="submit" fullWidth className={styles.buttonCancel}>
+              <Button
+                type="reset"
+                fullWidth
+                className={styles.buttonCancel}
+                onClick={onClose}
+              >
                 Cancelar
               </Button>
+
               <Button type="submit" fullWidth className={styles.buttonEdit}>
                 Salvar
               </Button>
