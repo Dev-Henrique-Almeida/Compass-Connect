@@ -66,7 +66,8 @@ export default function MyPerfil() {
     };
 
     fetchData();
-  }, [open]);
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -75,9 +76,10 @@ export default function MyPerfil() {
         <Card
           sx={{
             position: "relative",
-            width: 1920,
+
             borderRadius: 4,
-            height: isMobile ? 330 : 400,
+            height: isMobile ? 380 : 400,
+            width: isMobile ? 380 : "100%",
             border: "2px solid #97979b",
             background: "linear-gradient(0deg, #1E1F23, #2E2F36)",
           }}
@@ -88,7 +90,7 @@ export default function MyPerfil() {
               borderRadius: 4,
             }}
             component="img"
-            height={isMobile ? "200" : "280"}
+            height={isMobile ? "250" : "280"}
             image={isMobile ? "/capa-perfil-mobile.png" : "/capa-perfil.png"}
             alt="Capa do perfil"
           />
@@ -99,7 +101,8 @@ export default function MyPerfil() {
               width: isMobile ? 150 : 180,
               height: isMobile ? 150 : 180,
               position: "absolute",
-              top: isMobile ? 70 : 150,
+              border: "2px solid #E9B425",
+              top: isMobile ? 130 : 150,
               left: isMobile ? 15 : 60,
             }}
           />
@@ -120,7 +123,7 @@ export default function MyPerfil() {
                 pb: 2,
                 pr: 2,
                 color: "#E9B425",
-                width: isMobile ? "100%" : "30",
+                width: isMobile ? "140px" : "30",
               }}
             >
               <Typography
@@ -142,7 +145,21 @@ export default function MyPerfil() {
                 className={styles.buttonEdit}
                 onClick={() => setIsModalOpen(true)}
                 sx={{
-                  ml: isMobile ? -43 : 120,
+                  ml: isMobile ? -40 : 120,
+                  /* background:
+                    "linear-gradient(45deg, #ad2d14 30%, #f42e07 90%)",
+                  color: "white",
+                  borderRadius: "35px",
+                  height: "54px",
+                  marginTop: "-35px",
+                  textTransform: "none",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  transition: "color 0.3s",
+                  width: "140px",
+                  "&:hover": {
+                    color: "gray",
+                  }, */
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#FFFFFF")}

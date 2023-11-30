@@ -9,8 +9,8 @@ import {
   Typography,
   createTheme,
   useMediaQuery,
+  MenuItem,
 } from "@mui/material";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./contentProfile.module.scss";
 import dataIcon from "@/public/icons/nascimento.png";
@@ -22,20 +22,6 @@ import telefoneIcon from "@/public/icons/telefone.png";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
-
-interface UserResponse {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  birthdate: string;
-  image: string;
-  sex: string;
-  address: string;
-  phone: string;
-  occupation: string;
-}
 
 interface ProfileModalProps {
   open: boolean;
@@ -83,6 +69,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
   const [telefone, setTelefone] = useState("");
   const [url, setUrl] = useState("");
   const [id, setId] = useState("");
+
   const [errors, setErrors] = useState({
     nome: "",
     cargo: "",
@@ -96,20 +83,24 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       const userInfo = await getUserInfo();
-      if (userInfo) {
-        setNome(userInfo.name);
-        setCargo(userInfo.occupation);
-        setSexo(userInfo.sex);
-        setNascimento(new Date(userInfo.birthdate).toLocaleDateString("pt-BR"));
-        setEndereco(userInfo.address);
-        setTelefone(userInfo.phone);
-        setUrl(userInfo.image);
-        setId(userInfo.id);
+      if (open) {
+        if (userInfo) {
+          setNome(userInfo.name);
+          setCargo(userInfo.occupation);
+          setSexo(userInfo.sex);
+          setNascimento(
+            new Date(userInfo.birthdate).toLocaleDateString("pt-BR")
+          );
+          setEndereco(userInfo.address);
+          setTelefone(userInfo.phone);
+          setUrl(userInfo.image);
+          setId(userInfo.id);
+        }
       }
     };
 
     fetchData();
-  });
+  }, [open]);
 
   const router = useRouter();
 
@@ -182,6 +173,24 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       url: "",
     });
 
+    /* Validações para o Telefone */
+
+    if (!telefone) {
+      setErrors((errors) => ({
+        ...errors,
+        telefone: "Telefone é obrigatório. ",
+      }));
+      isValid = false;
+    }
+    /* Validações para o Telefone */
+
+    if (!sexo) {
+      setErrors((errors) => ({
+        ...errors,
+        sexo: "Sexo é obrigatório. ",
+      }));
+      isValid = false;
+    }
     /* Validações para a profissao */
 
     if (!url) {
@@ -191,17 +200,25 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       }));
       isValid = false;
     } else {
-      const pattern = /\.(jpeg|jpg|png)$/;
+      const pattern = /\.(jpeg|jpg|png|webp)$/;
       if (!pattern.test(url)) {
         setErrors((errors) => ({
           ...errors,
-          url: "A URL deve ser de uma imagem válida (jpeg, jpg, png).",
+          url: "A URL deve ser de uma imagem válida (jpeg, jpg, png, webp).",
         }));
         isValid = false;
       }
     }
 
     /* Validações para a profissao */
+
+    if (!cargo) {
+      setErrors((errors) => ({
+        ...errors,
+        cargo: "Cargo é obrigatório. ",
+      }));
+      isValid = false;
+    }
 
     if (cargo.length > 255) {
       setErrors((errors) => ({
@@ -211,14 +228,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       isValid = false;
     }
 
-    if (!cargo) {
+    /* Validações para o genero */
+    if (!sexo) {
       setErrors((errors) => ({
         ...errors,
-        cargo: "Cargo é obrigatório. ",
+        sexo: "Gênero é obrigatório. ",
       }));
       isValid = false;
     }
-    /* Validações para o genero */
 
     if (sexo.length > 255) {
       setErrors((errors) => ({
@@ -228,15 +245,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       isValid = false;
     }
 
-    if (!sexo) {
+    /* Validações para o nome */
+    if (!nome) {
       setErrors((errors) => ({
         ...errors,
-        sexo: "Gênero é obrigatório. ",
+        nome: "Nome é obrigatório. ",
       }));
       isValid = false;
     }
-
-    /* Validações para o nome */
 
     if (nome.length > 255) {
       setErrors((errors) => ({
@@ -246,14 +262,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       isValid = false;
     }
 
-    if (!nome) {
+    /* Validações para o endereço */
+    if (!endereco) {
       setErrors((errors) => ({
         ...errors,
-        nome: "Nome é obrigatório. ",
+        endereco: "Endereço é obrigatório. ",
       }));
       isValid = false;
     }
-    /* Validações para o endereço */
 
     if (endereco.length > 255) {
       setErrors((errors) => ({
@@ -263,27 +279,19 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       isValid = false;
     }
 
-    if (!endereco) {
+    /* Validações para o telefone */
+    if (!telefone) {
       setErrors((errors) => ({
         ...errors,
-        endereco: "Endereço é obrigatório. ",
+        telefone: "Telefone é obrigatório. ",
       }));
       isValid = false;
     }
-    /* Validações para o telefone */
 
     if (telefone.length > 255) {
       setErrors((errors) => ({
         ...errors,
         telefone: "Telefone não pode ter mais de 255 caracteres. ",
-      }));
-      isValid = false;
-    }
-
-    if (!telefone) {
-      setErrors((errors) => ({
-        ...errors,
-        telefone: "Telefone é obrigatório. ",
       }));
       isValid = false;
     }
@@ -336,7 +344,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         });
 
         if (response.ok) {
-          router.push("/home");
+          /*  router.push("/perfil"); */
+          window.location.reload();
         } else {
           /*         console.log("ID:    " + userId);
           console.log("TOKEN:    " + token); */
@@ -481,6 +490,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                 }}
               />
               <TextField
+                select
                 label="Sexo"
                 value={sexo}
                 onChange={(e) => setSexo(e.target.value)}
@@ -524,7 +534,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                     marginTop: 5,
                   },
                 }}
-              />
+              >
+                <MenuItem value="Male">Masculino</MenuItem>
+                <MenuItem value="Female">Feminino</MenuItem>
+              </TextField>
               <TextField
                 label="Data de Nascimento"
                 fullWidth

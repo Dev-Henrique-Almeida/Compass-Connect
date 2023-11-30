@@ -242,6 +242,12 @@ export default function ContentRegister() {
         });
 
         if (response.ok) {
+          const data = await response.json();
+          const token = data.token;
+          const userId = data.user.id;
+
+          localStorage.setItem("token", token);
+          localStorage.setItem("id", userId);
           router.push("/home");
         } else {
           console.error("Registro Falhou");
