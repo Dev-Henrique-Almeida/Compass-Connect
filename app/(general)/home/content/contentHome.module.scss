@@ -1,0 +1,69 @@
+.buttonPost {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.postContainer {
+  padding: 15px 24px;
+  color: white;
+  align-items: flex-start;
+  border-radius: 46px;
+  border: 1px solid var(--orange, #9e1a00);
+  background: var(
+    --gradient-button,
+    linear-gradient(180deg, #ad2d14 0%, #f42e07 100%)
+  );
+  position: absolute;
+  bottom: 5px;
+  width: 100px;
+}
+
+.accordions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  right: 0;
+  z-index: 1000;
+}
+
+.faPhoto,
+.faImg,
+.faClip,
+.faMap,
+.faSmile {
+  display: inline-block;
+  width: 20px;
+  height: 60px;
+  background-color: #1e1f23;
+  margin-left: 20px;
+}
+
+.container {
+  text-align: left;
+  background-color: #1e1f23;
+  width: 100%;
+}
+
+.avatarContainer {
+  display: flex;
+}
+
+.inputBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 24px;
+  height: 37px;
+  border-radius: 46px;
+}
+
+.avatarContainer input {
+  width: 900%;
+}
+
+@media (max-width: 767px) {
+  .accordions {
+    display: none;
+  }
+}

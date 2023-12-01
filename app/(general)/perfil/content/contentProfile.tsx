@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   Card,
@@ -22,6 +23,7 @@ import telefoneIcon from "@/public/icons/telefone.png";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
+import useStore from "../../../../store/store";
 
 interface ProfileModalProps {
   open: boolean;

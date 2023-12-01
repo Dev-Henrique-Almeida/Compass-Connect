@@ -1,0 +1,33 @@
+.main {
+  /* background: #17181c; */
+  color: white;
+  font-family: "Montserrat";
+  overflow: hidden;
+}
+
+.linkFull {
+  color: white;
+
+  display: flex;
+  width: 100%;
+  padding: 12px 24px;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.linkFull:active,
+.linkFull:focus {
+  background: var(--orange, #fe2e05);
+  color: black;
+}
+
+.activeLink {
+  background: var(--orange, #fe2e05);
+  color: black;
+}
+
+.linkFull:hover {
+  color: white;
+}

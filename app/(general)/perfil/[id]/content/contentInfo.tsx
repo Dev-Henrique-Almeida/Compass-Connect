@@ -12,7 +12,7 @@ import emailIcon from "@/public/icons/email-perfil.png";
 import enderecoIcon from "@/public/icons/endereco-perfil.png";
 import dataIcon from "@/public/icons/data-perfil.png";
 import generoIcon from "@/public/icons/genero-perfil.png";
-import useStore from "../../../../store/store";
+import useStore from "@/store/store";
 
 const theme = createTheme({
   typography: {
@@ -20,15 +20,13 @@ const theme = createTheme({
   },
 });
 
-const getUserInfo = async () => {
+const getUserInfo = async (userId: string) => {
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("id");
   if (token && userId) {
     try {
       const response = await fetch(`http://localhost:3001/users/${userId}`, {
         headers: {
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${token}`,
         },
       });
@@ -77,7 +75,8 @@ const ContentInfo = () => {
   useEffect(() => {
     const fetchData = async () => {
       let isMounted = true;
-      const userInfo = await getUserInfo();
+      const userId = "9edbce7c-7b2e-4975-b672-ba48ce603abd";
+      const userInfo = await getUserInfo(userId);
       const dateObject = new Date(userInfo.birthdate);
       const day = dateObject.getDate();
       const monthName = getMonthName(dateObject.getMonth());

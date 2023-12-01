@@ -13,9 +13,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import styles from "./contentCard.module.scss";
-import ProfileModal from "./contentProfile";
 import ContentInfo from "./contentInfo";
-import useStore from "../../../../store/store";
+import useStore from "@/store/store";
 
 const theme = createTheme({
   typography: {
@@ -46,7 +45,7 @@ const getUserInfo = async () => {
   }
 };
 
-export default function MyPerfil() {
+export default function MyIdPerfil() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [nome, setNome] = useState("");
@@ -160,28 +159,6 @@ export default function MyPerfil() {
                   {cargo}
                 </Typography>
               </Box>
-              <div>
-                <Button
-                  type="submit"
-                  className={styles.buttonEdit}
-                  onClick={() => setIsModalOpen(true)}
-                  sx={{
-                    ml: isMobile ? -40 : 120,
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "#000000")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "#FFFFFF")
-                  }
-                >
-                  Editar Perfil
-                </Button>
-                <ProfileModal
-                  open={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
-                />
-              </div>
             </Box>
           </Card>
         </Box>

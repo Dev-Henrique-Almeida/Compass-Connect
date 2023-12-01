@@ -30,7 +30,6 @@ export default function ContentLogin() {
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -38,7 +37,6 @@ export default function ContentLogin() {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let isValid = true;
-
     setErrors({ username: "", password: "" });
 
     if (password.length < 6 || password.length > 50) {

@@ -1,0 +1,78 @@
+.modalContent {
+  background: #17181c;
+  color: white;
+  font-family: "Montserrat";
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  border-radius: 20px;
+}
+
+.whiteBorder {
+  border-color: #ffffff !important;
+  border-radius: 35px !important;
+}
+
+.whiteLabel {
+  color: #757575 !important;
+  &.Mui-focused {
+    color: white !important;
+  }
+}
+
+.errorBorder {
+  border-color: #e9b425 !important;
+  border-radius: 35px !important;
+}
+
+.cursorButton {
+  cursor: pointer;
+}
+
+.buttonEdit {
+  background: linear-gradient(45deg, #ad2d14 30%, #f42e07 90%);
+  color: #ffffff;
+  border-radius: 35px;
+  margin-top: 10px;
+  height: 50px;
+
+  text-transform: none;
+  font-weight: bold;
+  transition: color 0.3s;
+  font-size: 15px;
+  &:hover {
+    color: gray;
+  }
+}
+
+.buttonCancel {
+  background: linear-gradient(180deg, #2e2f36 0%, #17181c 100%),
+    linear-gradient(0deg, #17181c, #17181c);
+
+  color: #ffffff;
+  border-radius: 35px;
+  margin-top: 10px;
+  height: 50px;
+
+  text-transform: none;
+  font-weight: bold;
+  transition: color 0.3s;
+  font-size: 15px;
+  &:hover {
+    color: gray;
+  }
+}
+
+@media (max-width: 768px) {
+  .buttonEdit {
+    margin-top: 10px;
+    height: 50px;
+    font-size: 13px;
+  }
+  .buttonCancel {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 50px;
+    font-size: 15px;
+  }
+}
