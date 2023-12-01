@@ -48,12 +48,13 @@ const ContentInfo = () => {
   const [endereco, setEndereco] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
-  const { modalOpen } = useStore();
+  const { modalOpen, id } = useStore();
   const homePostStyle = {
     width: modalOpen ? "calc(100% - 330px)" : "100%",
     marginLeft: modalOpen ? "330px" : "0",
   };
   const cardMarginLeft = modalOpen ? "-50%" : "-57.5%";
+
   // Função para obter o nome do mês em português
   const getMonthName = (monthIndex: number) => {
     const months = [
@@ -72,32 +73,39 @@ const ContentInfo = () => {
     ];
     return months[monthIndex];
   };
+
   useEffect(() => {
+    console.error(id);
     const fetchData = async () => {
-      let isMounted = true;
-      const userId = "9edbce7c-7b2e-4975-b672-ba48ce603abd";
-      const userInfo = await getUserInfo(userId);
-      const dateObject = new Date(userInfo.birthdate);
-      const day = dateObject.getDate();
-      const monthName = getMonthName(dateObject.getMonth());
-      const year = dateObject.getFullYear();
+      if (id) {
+        let isMounted = true;
+        try {
+          const userInfo = await getUserInfo(id);
+          if (userInfo && isMounted) {
+            const dateObject = new Date(userInfo.birthdate);
+            const day = dateObject.getDate();
+            const monthIndex = dateObject.getMonth();
+            const monthName = getMonthName(monthIndex);
+            const year = dateObject.getFullYear();
 
-      if (userInfo) {
-        setTelefone(userInfo.phone);
-        setEmail(userInfo.email);
-        setEndereco(userInfo.address);
-        setNascimento(`Nascido em ${day} de ${monthName}, ${year}`);
-
-        /* Checa se vem algo do response, para setar */
-        if (userInfo && isMounted) {
-          const formattedSex = formatSex(userInfo.sex);
-          setSexo(formattedSex);
+            setTelefone(userInfo.phone);
+            setEmail(userInfo.email);
+            setEndereco(userInfo.address);
+            setNascimento(`Nascido em ${day} de ${monthName}, ${year}`);
+            const formattedSex = formatSex(userInfo.sex);
+            setSexo(formattedSex);
+          }
+        } catch (error) {
+          console.error("Erro ao obter informações do usuário:", error);
         }
+        return () => {
+          isMounted = false;
+        };
       }
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   const formatSex = (sex: string) => {
     switch (sex) {

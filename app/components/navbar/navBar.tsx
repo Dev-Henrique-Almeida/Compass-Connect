@@ -298,7 +298,7 @@ export default function NavBar({
               alt="Login Home"
               style={{
                 width: isMobile ? "250px" : "240px",
-                marginLeft: isMobile ? 70 : 50,
+                marginLeft: isMobile ? 70 : 55,
               }}
             />
             <Card

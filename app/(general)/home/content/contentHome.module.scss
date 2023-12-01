@@ -10,6 +10,8 @@
   align-items: flex-start;
   border-radius: 46px;
   border: 1px solid var(--orange, #9e1a00);
+  font-family: "MontSerrat";
+  font-weight: bold;
   background: var(
     --gradient-button,
     linear-gradient(180deg, #ad2d14 0%, #f42e07 100%)
@@ -27,16 +29,38 @@
   z-index: 1000;
 }
 
-.faPhoto,
-.faImg,
-.faClip,
-.faMap,
-.faSmile {
+.endereco,
+.clip,
+.galeria,
+.camera {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  background-color: #1e1f23;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+  color: gray;
+}
+.emoji {
   display: inline-block;
   width: 20px;
-  height: 60px;
+  height: 20px;
   background-color: #1e1f23;
-  margin-left: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+  color: gray;
+}
+
+.scrollHidden {
+  max-height: 330px;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .container {

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./register.module.scss";
 import Link from "next/link";
 import { useState } from "react";
@@ -47,6 +47,20 @@ export default function ContentRegister() {
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
+
+  // Função para verificar se o usuário está logado
+  const isUserLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    return !!token; // Retorna true se o token existir, false caso contrário
+  };
+
+  useEffect(() => {
+    if (isUserLoggedIn()) {
+      // Se o usuário estiver logado, redirecione para a home
+      router.push("/home");
+    } else {
+    }
+  }, []);
 
   const applyDateMask = (value: string) => {
     let cleanValue = value.replace(/\D/g, "");
@@ -594,6 +608,12 @@ export default function ContentRegister() {
                   variant="contained"
                   className={styles.buttonRegister}
                   fullWidth
+                  sx={{
+                    color: "#FFFFFF",
+                    borderRadius: "35px",
+                    height: "55px",
+                    marginTop: "15px",
+                  }}
                 >
                   Registrar-se
                 </Button>

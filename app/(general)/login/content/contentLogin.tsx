@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   TextField,
@@ -10,6 +10,7 @@ import {
   InputAdornment,
   createTheme,
   ThemeProvider,
+  Card,
 } from "@mui/material";
 import nomeIcon from "@/public/icons/nome.png";
 import senhaIcon from "@/public/icons/senha.png";
@@ -30,6 +31,19 @@ export default function ContentLogin() {
   const [errors, setErrors] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  // Função para verificar se o usuário está logado
+  const isUserLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    return !!token; // Retorna true se o token existir, false caso contrário
+  };
+
+  useEffect(() => {
+    if (isUserLoggedIn()) {
+      // Se o usuário estiver logado, redirecione para a home
+      router.push("/home");
+    }
+  }, []);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -125,7 +139,17 @@ export default function ContentLogin() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={styles.main}>
+      <Card
+        className={styles.main}
+        sx={{
+          background: "linear-gradient(180deg, #2e2f36 0%, #17181c 100%)",
+          color: "white",
+
+          width: "100vw",
+          height: "100vh",
+          overflow: "hidden",
+        }}
+      >
         <Grid className={styles.main} container>
           <Grid className={styles.main} item sm={6} style={{ padding: 20 }}>
             <Paper
@@ -279,6 +303,13 @@ export default function ContentLogin() {
                   type="submit"
                   className={styles.buttonLogin}
                   fullWidth
+                  sx={{
+                    color: "#ffffff",
+                    borderRadius: "35px",
+                    marginTop: "15px",
+                    height: "55px",
+                    fontSize: "12px",
+                  }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.color = "#000000")
                   }
@@ -312,7 +343,7 @@ export default function ContentLogin() {
             />
           </Grid>
         </Grid>
-      </div>
+      </Card>
     </ThemeProvider>
   );
 }

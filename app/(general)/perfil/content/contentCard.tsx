@@ -16,6 +16,7 @@ import styles from "./contentCard.module.scss";
 import ProfileModal from "./contentProfile";
 import ContentInfo from "./contentInfo";
 import useStore from "../../../../store/store";
+import { useRouter } from "next/navigation";
 
 const theme = createTheme({
   typography: {
@@ -57,6 +58,19 @@ export default function MyPerfil() {
     width: modalOpen ? "calc(100% - 330px)" : "100%",
     marginLeft: modalOpen ? "330px" : "0",
   };
+  const router = useRouter();
+  // Função para verificar se o usuário está logado
+  const isUserLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    return !!token; // Retorna true se o token existir, false caso contrário
+  };
+
+  useEffect(() => {
+    if (!isUserLoggedIn()) {
+      // Se o usuário não estiver logado, redirecione para a página de login
+      router.push("/login");
+    }
+  }, []);
   const cardMarginLeft = modalOpen ? "1%" : "";
 
   useEffect(() => {
@@ -82,7 +96,7 @@ export default function MyPerfil() {
             p: isMobile ? 1 : 4,
             marginLeft: isMobile ? "" : cardMarginLeft,
 
-            pt: 2,
+            pt: isMobile ? 0 : 2,
           }}
         >
           <Card
@@ -167,6 +181,18 @@ export default function MyPerfil() {
                   onClick={() => setIsModalOpen(true)}
                   sx={{
                     ml: isMobile ? -40 : 120,
+                    background:
+                      "linear-gradient(45deg, #ad2d14 30%, #f42e07 90%)",
+                    color: "#ffffff",
+                    borderRadius: "35px",
+                    height: " 54px",
+                    marginTop: isMobile ? "50px" : "-35px",
+
+                    textTransform: "none",
+                    fontWeight: "bold",
+                    transition: "color 0.3s",
+                    width: "140px",
+                    fontSize: "15px",
                   }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.color = "#000000")

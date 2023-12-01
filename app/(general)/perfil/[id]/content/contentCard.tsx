@@ -22,15 +22,13 @@ const theme = createTheme({
   },
 });
 
-const getUserInfo = async () => {
+const getUserInfo = async (userId: string) => {
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("id");
   if (token && userId) {
     try {
       const response = await fetch(`http://localhost:3001/users/${userId}`, {
         headers: {
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${token}`,
         },
       });
@@ -51,7 +49,7 @@ export default function MyIdPerfil() {
   const [nome, setNome] = useState("");
   const [cargo, setCargo] = useState("");
   const [avatar, setAvatar] = useState("");
-  const { modalOpen } = useStore();
+  const { modalOpen, id } = useStore();
   const homePostStyle = {
     width: modalOpen ? "calc(100% - 330px)" : "100%",
     marginLeft: modalOpen ? "330px" : "0",
@@ -59,17 +57,28 @@ export default function MyIdPerfil() {
   const cardMarginLeft = modalOpen ? "1%" : "";
 
   useEffect(() => {
+    console.error(id);
     const fetchData = async () => {
-      const userInfo = await getUserInfo();
-      if (userInfo) {
-        setNome(userInfo.name);
-        setCargo(userInfo.occupation);
-        setAvatar(userInfo.image);
+      if (id) {
+        let isMounted = true;
+        try {
+          const userInfo = await getUserInfo(id);
+          if (userInfo && isMounted) {
+            setNome(userInfo.name);
+            setCargo(userInfo.occupation);
+            setAvatar(userInfo.image);
+          }
+        } catch (error) {
+          console.error("Erro ao obter informações do usuário:", error);
+        }
+        return () => {
+          isMounted = false;
+        };
       }
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   return (
     <ThemeProvider theme={theme}>

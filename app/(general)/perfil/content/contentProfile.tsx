@@ -723,12 +723,43 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                 type="reset"
                 fullWidth
                 className={styles.buttonCancel}
+                sx={{
+                  background:
+                    "linear-gradient(180deg, #2e2f36 0%, #17181c 100%),linear-gradient(0deg, #17181c, #17181c)",
+
+                  color: "#ffffff",
+                  borderRadius: "35px",
+                  marginTop: "10px",
+                  height: "50px",
+
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  transition: "color 0.3s",
+                  fontSize: "15px",
+                }}
                 onClick={onClose}
               >
                 Cancelar
               </Button>
 
-              <Button type="submit" fullWidth className={styles.buttonEdit}>
+              <Button
+                type="submit"
+                fullWidth
+                className={styles.buttonEdit}
+                sx={{
+                  background:
+                    "linear-gradient(45deg, #ad2d14 30%, #f42e07 90%)",
+                  color: "#ffffff",
+                  borderRadius: "35px",
+                  marginTop: "10px",
+                  height: "50px",
+
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  transition: "color 0.3s",
+                  fontSize: "15px",
+                }}
+              >
                 Salvar
               </Button>
             </form>
