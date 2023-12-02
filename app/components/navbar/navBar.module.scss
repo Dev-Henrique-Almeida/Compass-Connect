@@ -17,10 +17,8 @@
   border: 1px solid transparent;
 }
 
-.linkFull:active,
-.linkFull:focus {
-  background: var(--orange, #fe2e05);
-  color: black;
+.linkFull:hover {
+  color: var(--orange, #fe2e05); /* Hover effect for non-active links */
 }
 
 .activeLink {
@@ -28,6 +26,6 @@
   color: black;
 }
 
-.linkFull:hover {
-  color: #fe2e05;
+.activeLink:hover {
+  color: white; /* Hover effect for active link */
 }

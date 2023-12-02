@@ -64,7 +64,6 @@ const theme = createTheme({
 export default function ContentRegister() {
   const [nome, setNome] = useState("");
   const [username, setUsername] = useState("");
-  const [usernameAll, setUsernameAll] = useState("");
   const [nascimento, setNascimento] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -271,45 +270,43 @@ export default function ContentRegister() {
     }
 
     if (isValid) {
-      if (isValid) {
-        try {
-          const response = await fetch("http://localhost:3001/auth/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Cache-Control": "no-cache",
+      try {
+        const response = await fetch("http://localhost:3001/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
 
-              "User-Agent": "PostmanRuntime/7.35.0",
-              Accept: "*/*",
-              "Accept-Encoding": "gzip, deflate, br",
-              Connection: "keep-alive",
-            },
-            body: JSON.stringify({
-              name: nome,
-              username,
-              birthdate: formattedDate,
-              email,
-              password,
-              confirmPassword,
-            }),
-          });
+            "User-Agent": "PostmanRuntime/7.35.0",
+            Accept: "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            Connection: "keep-alive",
+          },
+          body: JSON.stringify({
+            name: nome,
+            username,
+            birthdate: formattedDate,
+            email,
+            password,
+            confirmPassword,
+          }),
+        });
 
-          if (response.ok) {
-            const data = await response.json();
-            const token = data.token;
-            const userId = data.user.id;
+        if (response.ok) {
+          const data = await response.json();
+          const token = data.token;
+          const userId = data.user.id;
 
-            localStorage.setItem("token", token);
-            localStorage.setItem("id", userId);
-            router.push("/home");
-          } else {
-            console.error("Registro Falhou");
-          }
-        } catch (error) {
-          console.error("Ocorreu um erro:", error);
+          localStorage.setItem("token", token);
+          localStorage.setItem("id", userId);
+          router.push("/home");
+        } else {
+          console.error("Registro Falhou");
         }
-        console.log(formattedDate);
+      } catch (error) {
+        console.error("Ocorreu um erro:", error);
       }
+      console.log(formattedDate);
     }
   };
 
