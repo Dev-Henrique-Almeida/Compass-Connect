@@ -343,7 +343,7 @@ export default function NavBar({
                 }`}
                 onClick={() => handleItemClick("/marketplace", "MarketPlace")}
               >
-                Marktplace
+                Marketplace
               </Link>
               <Link
                 href="/"

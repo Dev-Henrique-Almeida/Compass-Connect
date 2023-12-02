@@ -4,7 +4,7 @@
   margin-top: auto;
 }
 
-.postContainer {
+.postButton {
   padding: 15px 24px;
   color: white;
   align-items: flex-start;
@@ -25,8 +25,10 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  right: 0;
   z-index: 1000;
+  position: absolute;
+  top: 84px;
+  right: 20px;
 }
 
 .endereco,
@@ -42,6 +44,7 @@
   margin-top: 20px;
   color: gray;
 }
+
 .emoji {
   display: inline-block;
   width: 20px;

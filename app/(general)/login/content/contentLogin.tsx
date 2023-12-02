@@ -44,6 +44,7 @@ export default function ContentLogin() {
       router.push("/home");
     }
   }, []);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -306,6 +307,8 @@ export default function ContentLogin() {
                   sx={{
                     color: "#ffffff",
                     borderRadius: "35px",
+                    fontFamily: "Montserrat",
+
                     marginTop: "15px",
                     height: "55px",
                     fontSize: "12px",

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./page.module.scss";
 
+
 export const metadata: Metadata = {
   title: "Compass Connect",
 };
+
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (

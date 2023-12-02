@@ -8,7 +8,15 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Avatar from "@mui/material/Avatar";
-import { Card, ThemeProvider, createTheme, useMediaQuery } from "@mui/material";
+
+import {
+  Box,
+  Card,
+  Divider,
+  ThemeProvider,
+  createTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import cameraIcon from "@/public/icons/camera.png";
 import galeriaIcon from "@/public/icons/galeria.png";
@@ -16,6 +24,7 @@ import clipIcon from "@/public/icons/clip.png";
 import enderecoIcon from "@/public/icons/endereco.png";
 import emojiIcon from "@/public/icons/emoji.png";
 import Image from "next/image";
+import ContentPost from "./contentPost";
 
 const theme = createTheme({
   typography: {
@@ -86,6 +95,7 @@ export default function ContentHome() {
   const [users, setUsers] = useState<User[]>([]);
   const [image, setImage] = useState("");
   const { modalOpen, setId } = useStore();
+
   const homePostStyle = {
     width: modalOpen ? "calc(80% - 350px)" : "80%",
     marginLeft: modalOpen ? "350px" : "0",
@@ -109,6 +119,7 @@ export default function ContentHome() {
       router.push("/login");
     }
   }, []);
+
   useEffect(() => {
     if (users.length > 4) {
       setShouldScroll(true);
@@ -174,7 +185,7 @@ export default function ContentHome() {
           borderRadius: 0,
           p: " 0px 36px",
           pt: "20px",
-          height: "55rem",
+          height: "auto",
           background: "#17181c",
           fontfamily: "MontSerrat",
         }}
@@ -210,7 +221,12 @@ export default function ContentHome() {
                 }}
               />
               <input
-                style={{ fontFamily: "MontSerrat" }}
+                style={{
+                  fontFamily: "MontSerrat",
+                  background: "transparent",
+                  border: "1px solid gray",
+                  color: "white",
+                }}
                 type="text"
                 value={inputValue}
                 onChange={handleChange}
@@ -240,12 +256,13 @@ export default function ContentHome() {
             />
 
             <div className={styles.buttonPost}>
-              <button type="submit" className={styles.postContainer}>
+              <button type="submit" className={styles.postButton}>
                 Postar
               </button>
             </div>
           </div>
         </Card>
+        <ContentPost />
 
         <div className={styles.accordions}>
           <div>
@@ -262,7 +279,7 @@ export default function ContentHome() {
               className={shouldScroll ? styles.scrollHidden : ""}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
@@ -304,7 +321,7 @@ export default function ContentHome() {
               }}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >

@@ -22,6 +22,39 @@ import {
   ThemeProvider,
 } from "@mui/material";
 
+interface User {
+  id: string;
+  email: string;
+  username: string;
+}
+
+const getUsers = async (): Promise<User[]> => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      const response = await fetch(`http://localhost:3001/users`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const usersData: User[] = data.map((user: any) => ({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        }));
+        return usersData;
+      }
+    } catch (error) {
+      console.error("Erro ao obter informações dos usuários:", error);
+    }
+  }
+  return []; // Aqui vai retornar um array vazio se houver um erro ou se o token não existir
+};
+
 const theme = createTheme({
   typography: {
     fontFamily: ["Montserrat", "sans-serif"].join(","),
@@ -31,10 +64,12 @@ const theme = createTheme({
 export default function ContentRegister() {
   const [nome, setNome] = useState("");
   const [username, setUsername] = useState("");
+  const [usernameAll, setUsernameAll] = useState("");
   const [nascimento, setNascimento] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [errors, setErrors] = useState({
     nome: "",
     username: "",
@@ -106,7 +141,11 @@ export default function ContentRegister() {
 
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const emailUnique = await checkEmailUnique(email);
+    const userUnique = await checkUsernameUnique(username);
 
+    console.error(email);
+    console.log(emailUnique);
     let isValid = true;
 
     setErrors({
@@ -155,13 +194,16 @@ export default function ContentRegister() {
         username: "Usuário não pode ter mais de 255 caracteres. ",
       }));
       isValid = false;
-    }
-
-    if (!username) {
+    } else if (!username) {
       setErrors((errors) => ({
         ...errors,
         username: "Usuário é obrigatório. ",
       }));
+      isValid = false;
+    } else if (!userUnique) {
+      console.log(userUnique);
+
+      setErrors((errors) => ({ ...errors, username: "Usuário já existe." }));
       isValid = false;
     }
 
@@ -185,10 +227,7 @@ export default function ContentRegister() {
 
     /* Validações para o email */
     if (email.length === 0) {
-      setErrors((errors) => ({
-        ...errors,
-        email: "E-mail é obrigatório.",
-      }));
+      setErrors((errors) => ({ ...errors, email: "E-mail é obrigatório." }));
       isValid = false;
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
       setErrors((errors) => ({
@@ -196,6 +235,13 @@ export default function ContentRegister() {
         email: "Por favor, insira um e-mail válido.",
       }));
       isValid = false;
+    } else {
+      // Verificação de unicidade do e-mail
+      const emailIsUnique = await checkEmailUnique(email);
+      if (!emailIsUnique) {
+        setErrors((errors) => ({ ...errors, email: "Email já existe." }));
+        isValid = false;
+      }
     }
 
     /* Validações para a data de nascimento */
@@ -225,57 +271,56 @@ export default function ContentRegister() {
     }
 
     if (isValid) {
-      const isUnique = await checkUsernameUnique(username);
-      if (!isUnique) {
-        setErrors((errors) => ({ ...errors, username: "Usuário já existe." }));
-        isValid = false;
-      }
-    }
+      if (isValid) {
+        try {
+          const response = await fetch("http://localhost:3001/auth/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "no-cache",
 
-    if (isValid) {
-      try {
-        const response = await fetch("http://localhost:3001/auth/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
+              "User-Agent": "PostmanRuntime/7.35.0",
+              Accept: "*/*",
+              "Accept-Encoding": "gzip, deflate, br",
+              Connection: "keep-alive",
+            },
+            body: JSON.stringify({
+              name: nome,
+              username,
+              birthdate: formattedDate,
+              email,
+              password,
+              confirmPassword,
+            }),
+          });
 
-            "User-Agent": "PostmanRuntime/7.35.0",
-            Accept: "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            Connection: "keep-alive",
-          },
-          body: JSON.stringify({
-            name: nome,
-            username,
-            birthdate: formattedDate,
-            email,
-            password,
-            confirmPassword,
-          }),
-        });
+          if (response.ok) {
+            const data = await response.json();
+            const token = data.token;
+            const userId = data.user.id;
 
-        if (response.ok) {
-          const data = await response.json();
-          const token = data.token;
-          const userId = data.user.id;
-
-          localStorage.setItem("token", token);
-          localStorage.setItem("id", userId);
-          router.push("/home");
-        } else {
-          console.error("Registro Falhou");
+            localStorage.setItem("token", token);
+            localStorage.setItem("id", userId);
+            router.push("/home");
+          } else {
+            console.error("Registro Falhou");
+          }
+        } catch (error) {
+          console.error("Ocorreu um erro:", error);
         }
-      } catch (error) {
-        console.error("Ocorreu um erro:", error);
+        console.log(formattedDate);
       }
-      console.log(formattedDate);
     }
   };
 
-  const checkUsernameUnique = async (username: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return true;
+  const checkUsernameUnique = async (newUsername: string) => {
+    const users = await getUsers();
+    return users.every((user) => user.username !== newUsername);
+  };
+
+  const checkEmailUnique = async (newEmail: string) => {
+    const users = await getUsers();
+    return users.every((user) => user.email !== newEmail);
   };
 
   return (
