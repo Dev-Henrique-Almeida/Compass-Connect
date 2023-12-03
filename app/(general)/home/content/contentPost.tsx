@@ -187,7 +187,7 @@ const ContentPost = () => {
       <div className={styles.timeline}>
         <Box
           sx={{
-            width: isMobile ? "390px" : "auto",
+            width: isMobile ? "395px" : "auto",
             marginBottom: isMobile ? "15px" : "15px",
           }}
         >
