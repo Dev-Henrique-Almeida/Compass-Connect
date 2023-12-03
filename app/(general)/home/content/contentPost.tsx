@@ -280,7 +280,7 @@ const ContentPost = () => {
                   </Typography>
 
                   {post.image && (
-                    <div className={styles.postImage}>
+                    <div>
                       <img
                         src={post.image}
                         alt="imagePost"
@@ -291,7 +291,7 @@ const ContentPost = () => {
                         style={{
                           width: "100%",
                           maxHeight: "500px",
-                          height: "25rem",
+                          height: isMobile ? "300px" : "25rem",
                           margin: 0,
                           padding: 0,
                         }}

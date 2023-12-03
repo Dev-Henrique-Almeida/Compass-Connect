@@ -306,12 +306,12 @@ export default function NavBar({
               alt="Login Home"
               style={{
                 width: isMobile ? "250px" : "240px",
-                marginLeft: isMobile ? 70 : 55,
+                marginLeft: isMobile ? 60 : 55,
               }}
             />
             <Card
               sx={{
-                marginLeft: isMobile ? "80px" : " 55px",
+                marginLeft: isMobile ? "70px" : " 55px",
                 borderRadius: 0,
                 display: "flex",
                 color: "white",

@@ -356,6 +356,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         sx={{
           top: "8%",
           left: isMobile ? "fit-content" : "37.5%",
+
           width: isMobile ? "fit-content" : "400px",
         }}
       >
@@ -365,6 +366,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
             sx={{
               paddingLeft: "30px",
               paddingRight: "30px",
+              background: "#17181c",
+              color: "white",
+              borderRadius: "20px",
               paddingBottom: "20px",
               margin: isMobile ? "10px" : "0px",
             }}

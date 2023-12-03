@@ -101,7 +101,6 @@ export default function MyPerfil() {
             justifyContent: "center",
             p: isMobile ? 1 : 4,
             marginLeft: isMobile ? "" : cardMarginLeft,
-
             pt: isMobile ? 0 : 2,
           }}
         >
@@ -112,6 +111,7 @@ export default function MyPerfil() {
               borderRadius: 4,
               height: isMobile ? 380 : 400,
               width: isMobile ? 380 : "100%",
+
               border: "2px solid #97979b",
               background: "linear-gradient(0deg, #1E1F23, #2E2F36)",
             }}
