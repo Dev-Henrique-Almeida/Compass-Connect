@@ -146,7 +146,7 @@ export default function ContentLogin() {
         sx={{
           background: "linear-gradient(180deg, #2e2f36 0%, #17181c 100%)",
           color: "white",
-
+          borderRadius: 0,
           width: "100vw",
           height: "100vh",
           overflow: "hidden",

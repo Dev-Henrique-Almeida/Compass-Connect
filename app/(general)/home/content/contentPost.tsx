@@ -102,12 +102,11 @@ const ContentPost = () => {
   const [commentClicked, setCommentClicked] = useState(false);
   const [shareClicked, setShareClicked] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
-
-  /* const [inputValue, setInputValue] = useState("Tem algo a dizer?"); */
   const [isFocused, setIsFocused] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAllComments, setShowAllComments] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
     image: "",
@@ -161,6 +160,11 @@ const ContentPost = () => {
     setInputValue(event.target.value);
   }; */
 
+  const handleShowAllComments = () => {
+    setShowAllComments(!showAllComments);
+  };
+
+  // Função para mandar o like que o usuário deu, para o post que foi escolhido
   const handleLikeClick = async (postId: string) => {
     if (hasLiked) {
       // Checa se o usuário já curtiu para não poder curtir novamente
@@ -342,10 +346,23 @@ const ContentPost = () => {
                               marginBottom: "-5px",
                             }}
                           />
-                          {getTimeSince(post.createdAt)} em{" "}
-                          <span style={{ color: "white", fontWeight: 500 }}>
-                            {post.location}
-                          </span>
+                          {getTimeSince(post.createdAt)}
+                          {post.location && (
+                            <>
+                              <span
+                                style={{
+                                  color: "var(--gray-gray-300, #75767D)",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {" "}
+                                em{" "}
+                              </span>
+                              <span style={{ color: "white", fontWeight: 500 }}>
+                                {post.location}
+                              </span>
+                            </>
+                          )}
                         </p>
                       </div>
                     </div>
@@ -513,7 +530,7 @@ const ContentPost = () => {
                       onBlur={() => setIsFocused(false)}
                       onKeyPress={(event) => {
                         if (event.key === "Enter") {
-                          handleCommentClick(post.id); // Chame a função de submissão e passe o ID do post
+                          handleCommentClick(post.id);
                         }
                       }}
                     />
