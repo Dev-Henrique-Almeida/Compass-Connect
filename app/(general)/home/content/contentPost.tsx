@@ -101,7 +101,8 @@ const ContentPost = () => {
   const [likeClicked, setLikeClicked] = useState(false);
   const [commentClicked, setCommentClicked] = useState(false);
   const [shareClicked, setShareClicked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [hasLiked, setHasLiked] = useState(false);
+
   /* const [inputValue, setInputValue] = useState("Tem algo a dizer?"); */
   const [isFocused, setIsFocused] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -160,9 +161,40 @@ const ContentPost = () => {
     setInputValue(event.target.value);
   }; */
 
-  const handleLikeClick = () => {
-    setLikeClicked(!likeClicked);
-    setLikeCount((prevCount) => prevCount + 1);
+  const handleLikeClick = async (postId: string) => {
+    if (hasLiked) {
+      // Checa se o usuário já curtiu para não poder curtir novamente
+      return;
+    }
+    try {
+      const response = await fetch(
+        `http://localhost:3001/posts/like/${postId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const updatedPost = await response.json();
+        setHasLiked(true);
+        setPosts((currentPosts) => {
+          return currentPosts.map((post) => {
+            if (post.id === postId) {
+              return { ...post, likes: updatedPost.likes };
+            }
+            return post;
+          });
+        });
+        setLikeClicked(!likeClicked);
+      } else {
+        console.error("Falha ao curtir o post");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar requisição de curtir:", error);
+    }
   };
 
   // Função para o usuário comentar no post
@@ -360,34 +392,30 @@ const ContentPost = () => {
                     className={`${styles.postLike} ${
                       likeClicked ? styles.clicked : ""
                     }`}
-                    onClick={handleLikeClick}
+                    onClick={() => handleLikeClick(post.id)}
                   >
-                    <span
-                      className={styles.likeText}
-                      id="likeText"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "white",
-                        fontSize: "12px",
-                      }}
-                    >
+                    <div className={styles.likeContainer}>
+                      {" "}
                       <ThumbUpIcon
                         style={{
                           width: "16px",
                           height: "16px",
                           marginRight: "5px",
-                          color: "white",
                         }}
+                        className={hasLiked ? `${styles.iconClicked}` : ""}
                       />
-                      Curtiu {likeCount > 0 && `(${likeCount})`}
-                    </span>
-                    <div className={styles.likesBadge} id="likesBadge">
                       <span
-                        className={styles.likesNumber}
-                        id="likesNumber"
-                      ></span>
-                    </div>
+                        style={{
+                          fontSize: "12px",
+                        }}
+                        className={`${styles.likeText} ${
+                          hasLiked ? styles.likedText : ""
+                        }`}
+                      >
+                        {hasLiked ? "Curtiu" : "Curtir"} ({post.likes})
+                      </span>
+                    </div>{" "}
+                    {/* Feche a div aqui */}
                   </div>
 
                   <div
@@ -520,7 +548,7 @@ const ContentPost = () => {
                               color: "white",
                               marginTop: "20px",
 
-                              fontSize: isMobile ? "14px" : "15px",
+                              fontSize: isMobile ? "12px" : "14px",
                               fontWeight: 500,
                             }}
                           >

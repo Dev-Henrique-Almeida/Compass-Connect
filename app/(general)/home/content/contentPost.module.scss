@@ -8,6 +8,19 @@
   background-color: #1e1f23;
 }
 
+.likeContainer {
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.iconClicked {
+  color: #e9b425;
+}
+.likedText {
+  color: #e9b425;
+}
+
 .flor {
   position: absolute;
   top: 20px;
