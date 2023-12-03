@@ -43,6 +43,10 @@ interface Post {
   likes: string;
 }
 
+type ShowAllCommentsState = {
+  [key: string]: boolean;
+};
+
 const theme = createTheme({
   typography: {
     fontFamily: "Nunito, Arial",
@@ -106,15 +110,16 @@ const ContentPost = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showAllComments, setShowAllComments] = useState(false);
+  const { modalOpen, setId } = useStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter();
+  const [showAllCommentsForPost, setShowAllCommentsForPost] =
+    useState<ShowAllCommentsState>({});
   const [userProfile, setUserProfile] = useState({
     name: "",
     image: "",
     id: "",
   });
-  const { modalOpen, setId } = useStore();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const router = useRouter();
   const homePostStyle = {
     width: modalOpen ? "calc(83.3% - 350px)" : "83.3%",
     marginLeft: modalOpen ? "350px" : "0",
@@ -129,6 +134,8 @@ const ContentPost = () => {
   };
 
   /* UseEffects */
+
+  // Função para obter todos os posts
   useEffect(() => {
     const fetchData = async () => {
       const fetchedPosts = await getPosts();
@@ -139,8 +146,8 @@ const ContentPost = () => {
     fetchData();
   }, []);
 
+  // Função para obter dados do usuário
   useEffect(() => {
-    // Função para obter dados do usuário
     const fetchUserData = async () => {
       const userData = await getUserInfo();
       setUserProfile({
@@ -160,8 +167,11 @@ const ContentPost = () => {
     setInputValue(event.target.value);
   }; */
 
-  const handleShowAllComments = () => {
-    setShowAllComments(!showAllComments);
+  const handleShowAllComments = (postId: string) => {
+    setShowAllCommentsForPost((prevState: ShowAllCommentsState) => ({
+      ...prevState,
+      [postId]: !prevState[postId],
+    }));
   };
 
   // Função para mandar o like que o usuário deu, para o post que foi escolhido
@@ -346,23 +356,10 @@ const ContentPost = () => {
                               marginBottom: "-5px",
                             }}
                           />
-                          {getTimeSince(post.createdAt)}
-                          {post.location && (
-                            <>
-                              <span
-                                style={{
-                                  color: "var(--gray-gray-300, #75767D)",
-                                  fontWeight: 500,
-                                }}
-                              >
-                                {" "}
-                                em{" "}
-                              </span>
-                              <span style={{ color: "white", fontWeight: 500 }}>
-                                {post.location}
-                              </span>
-                            </>
-                          )}
+                          {getTimeSince(post.createdAt)} em{" "}
+                          <span style={{ color: "white", fontWeight: 500 }}>
+                            {post.location}
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -541,53 +538,140 @@ const ContentPost = () => {
                       Todos os comentários
                     </span>
                   </div>
-                  {post.comments.map((comment) => (
-                    <div key={comment.id} className={styles.comment}>
-                      <div
-                        className={styles.avatarContainer}
-                        onClick={() => handleUserClick(comment.author.id)}
-                      >
-                        <Avatar
-                          alt={comment.author.name}
-                          src={comment.author.image}
-                          style={{
-                            marginTop: "20px",
-                            width: "32px",
-                            height: "32px",
-                            marginRight: "16px",
-                            border: "1px solid #E9B425",
-                          }}
-                        />
-                        <div className={styles.commentContent}>
-                          <Typography
-                            variant="h4"
-                            sx={{
-                              color: "white",
-                              marginTop: "20px",
-
-                              fontSize: isMobile ? "12px" : "14px",
-                              fontWeight: 500,
-                            }}
+                  {post.comments.length > 1 ? (
+                    showAllCommentsForPost[post.id] ? (
+                      post.comments.map((comment) => (
+                        <div key={comment.id} className={styles.comment}>
+                          <div
+                            className={styles.avatarContainer}
+                            onClick={() => handleUserClick(comment.author.id)}
                           >
-                            {comment.author.name} {""}:{" "}
-                            <span style={{ fontWeight: "300" }}>
-                              {comment.content}
-                            </span>
-                          </Typography>
+                            <Avatar
+                              alt={comment.author.name}
+                              src={comment.author.image}
+                              style={{
+                                marginTop: "20px",
+                                width: "32px",
+                                height: "32px",
+                                marginRight: "16px",
+                                border: "1px solid #E9B425",
+                              }}
+                            />
+                            <div className={styles.commentContent}>
+                              <Typography
+                                variant="h4"
+                                sx={{
+                                  color: "white",
+                                  marginTop: "20px",
+
+                                  fontSize: isMobile ? "12px" : "14px",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {comment.author.name} {""}:{" "}
+                                <span style={{ fontWeight: "300" }}>
+                                  {comment.content}
+                                </span>
+                              </Typography>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      // Para poder renderizar apenas o primeiro comentário
+                      <div key={post.comments[0].id} className={styles.comment}>
+                        <div
+                          className={styles.avatarContainer}
+                          onClick={() =>
+                            handleUserClick(post.comments[0].author.id)
+                          }
+                        >
+                          <Avatar
+                            alt={post.comments[0].author.name}
+                            src={post.comments[0].author.image}
+                            style={{
+                              marginTop: "20px",
+                              width: "32px",
+                              height: "32px",
+                              marginRight: "16px",
+                              border: "1px solid #E9B425",
+                            }}
+                          />
+                          <div className={styles.commentContent}>
+                            <Typography
+                              variant="h4"
+                              sx={{
+                                color: "white",
+                                marginTop: "20px",
+
+                                fontSize: isMobile ? "12px" : "14px",
+                                fontWeight: 500,
+                              }}
+                            >
+                              {post.comments[0].author.name} {""}:{" "}
+                              <span style={{ fontWeight: "300" }}>
+                                {post.comments[0].content}
+                              </span>
+                            </Typography>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  ) : (
+                    post.comments.map((comment) => (
+                      <div key={comment.id} className={styles.comment}>
+                        <div key={comment.id} className={styles.comment}>
+                          <div
+                            className={styles.avatarContainer}
+                            onClick={() => handleUserClick(comment.author.id)}
+                          >
+                            <Avatar
+                              alt={comment.author.name}
+                              src={comment.author.image}
+                              style={{
+                                marginTop: "20px",
+                                width: "32px",
+                                height: "32px",
+                                marginRight: "16px",
+                                border: "1px solid #E9B425",
+                              }}
+                            />
+                            <div className={styles.commentContent}>
+                              <Typography
+                                variant="h4"
+                                sx={{
+                                  color: "white",
+                                  marginTop: "20px",
+
+                                  fontSize: isMobile ? "12px" : "14px",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {comment.author.name} {""}:{" "}
+                                <span style={{ fontWeight: "300" }}>
+                                  {comment.content}
+                                </span>
+                              </Typography>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+
                   <Divider style={{ marginTop: "16px" }} />
 
-                  <div className={styles.seeAllComments}>
-                    <p
-                      className={styles.seeAllCommentsText}
-                      style={{ marginTop: "16px", cursor: "pointer" }}
-                    >
-                      Ver todos os comentários
-                    </p>
-                  </div>
+                  {post.comments.length > 1 && (
+                    <div className={styles.seeAllComments}>
+                      <p
+                        className={styles.seeAllCommentsText}
+                        style={{ marginTop: "16px", cursor: "pointer" }}
+                        onClick={() => handleShowAllComments(post.id)}
+                      >
+                        Ver todos os comentários
+                      </p>
+                    </div>
+                  )}
                 </div>
               </Card>
             </Box>
