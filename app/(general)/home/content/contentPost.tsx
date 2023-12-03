@@ -92,7 +92,8 @@ const ContentPost = () => {
   const [commentClicked, setCommentClicked] = useState(false);
   const [shareClicked, setShareClicked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-  const [inputValue, setInputValue] = useState("Tem algo a dizer?");
+  /* const [inputValue, setInputValue] = useState("Tem algo a dizer?"); */
+  const [isFocused, setIsFocused] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [userProfile, setUserProfile] = useState({ name: "", image: "" });
   const { modalOpen, setId } = useStore();
@@ -105,6 +106,10 @@ const ContentPost = () => {
   const mobileHomePostStyle = {
     width: "92%",
     marginLeft: "-5%",
+  };
+  const focusedStyle = {
+    border: "0.8px solid gray",
+    padding: "9.6px 14.4px",
   };
 
   /* UseEffects */
@@ -134,9 +139,9 @@ const ContentPost = () => {
   /* Funções */
 
   // Função para o uso do input
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  /*   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-  };
+  }; */
 
   const handleLikeClick = () => {
     setLikeClicked(!likeClicked);
@@ -411,16 +416,23 @@ const ContentPost = () => {
                       }}
                     />
                     <input
-                      type="text"
-                      value={inputValue}
-                      onChange={handleChange}
-                      className={styles.textBox}
                       style={{
-                        fontFamily: "Poppins",
+                        fontFamily: "MontSerrat",
                         background: "transparent",
-                        color: "white",
                         border: "1px solid gray",
+                        color: "white",
+                        padding: "10px 15px",
+                        outline: "none",
+                        ...(isFocused && focusedStyle),
                       }}
+                      type="text"
+                      name="text"
+                      /*  value={postData.text} */
+                      /* onChange={handleInputChange} */
+                      placeholder="Tem algo a dizer?"
+                      className={styles.inputBox}
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
                     />
                   </div>
 

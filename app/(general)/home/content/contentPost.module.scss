@@ -8,11 +8,6 @@
   background-color: #1e1f23;
 }
 
-.whiteBorder {
-  border-color: #ffffff !important;
-  border-radius: 35px !important;
-}
-
 .flor {
   position: absolute;
   top: 20px;
@@ -54,6 +49,17 @@
   position: absolute;
   bottom: 8px;
   width: 100px;
+}
+
+.inputBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 24px;
+  height: 37px;
+  border-radius: 46px;
+  border-color: #757575 !important;
+  border-radius: 35px !important;
 }
 
 .accordions {

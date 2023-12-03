@@ -68,7 +68,9 @@ export default function ContentRegister() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   const [errors, setErrors] = useState({
     nome: "",
     username: "",
@@ -77,17 +79,8 @@ export default function ContentRegister() {
     email: "",
     confirmPassword: "",
   });
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
-  const router = useRouter();
-
-  // Função para verificar se o usuário está logado
-  const isUserLoggedIn = () => {
-    const token = localStorage.getItem("token");
-    return !!token; // Retorna true se o token existir, false caso contrário
-  };
-
+  // Usado para checar se o usuário já está logado
   useEffect(() => {
     if (isUserLoggedIn()) {
       // Se o usuário estiver logado, redirecione para a home
@@ -96,6 +89,13 @@ export default function ContentRegister() {
     }
   }, []);
 
+  // Função para verificar se o usuário está logado
+  const isUserLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    return !!token; // Retorna true se o token existir, false caso contrário
+  };
+
+  // Função responsável por aplicar uma máscara ao input de data
   const applyDateMask = (value: string) => {
     let cleanValue = value.replace(/\D/g, "");
 
@@ -125,15 +125,16 @@ export default function ContentRegister() {
         year = "2023";
       }
     }
-
     cleanValue = [day, month, year].filter(Boolean).join("/");
     return cleanValue;
   };
 
+  // Função responsável por deixar a senha visível
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  // Função responsável por deixar a confirmação da senha visível
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
@@ -219,7 +220,7 @@ export default function ContentRegister() {
     }
 
     /* Validações para o email */
-    if (email.length === 0) {
+    if (!email) {
       setErrors((errors) => ({ ...errors, email: "E-mail é obrigatório." }));
       isValid = false;
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
