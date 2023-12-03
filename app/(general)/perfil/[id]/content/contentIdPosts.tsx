@@ -298,7 +298,7 @@ const ContentIdPosts = () => {
         <Box
           sx={{
             position: "absolute",
-            top: isMobile ? "133%" : "173%",
+            top: isMobile ? "137%" : "173%",
             left: isMobile ? "-18px" : "25%",
             marginTop: isMobile ? "-130px" : "-1000px",
             marginLeft: isMobile ? "26.5px" : "auto",

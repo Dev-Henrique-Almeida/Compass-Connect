@@ -256,7 +256,7 @@ const ContentInfo = () => {
           <Box
             sx={{
               mt: 2,
-              ml: isMobile ? -2 : 5,
+              ml: isMobile ? 1 : 5,
 
               width: isMobile ? "100%" : "20%",
             }}
@@ -265,12 +265,12 @@ const ContentInfo = () => {
               sx={{
                 display: "flex",
                 color: "#E9B425",
-                ml: isMobile ? 1 : 3.7,
+                ml: isMobile ? -1 : 3.7,
 
                 width: isMobile ? "370px" : "1360px",
                 background: "transparent",
                 marginTop: isMobile ? "10px" : "0",
-                height: "60px",
+                height: "50px",
               }}
             >
               <Typography
