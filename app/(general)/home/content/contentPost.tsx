@@ -33,12 +33,14 @@ interface Comment {
 }
 
 interface Post {
+  id: string;
   image: string;
   text: string;
   author: Author;
   location: string;
   createdAt: string;
   comments: Comment[];
+  likes: string;
 }
 
 const theme = createTheme({
@@ -103,6 +105,8 @@ const ContentPost = () => {
   /* const [inputValue, setInputValue] = useState("Tem algo a dizer?"); */
   const [isFocused, setIsFocused] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [commentContent, setCommentContent] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
     image: "",
@@ -161,8 +165,39 @@ const ContentPost = () => {
     setLikeCount((prevCount) => prevCount + 1);
   };
 
-  const handleCommentClick = () => {
-    setCommentClicked(!commentClicked);
+  // Função para o usuário comentar no post
+  const handleCommentClick = async (postId: string) => {
+    if (!commentContent.trim()) return;
+
+    setIsSubmitting(true);
+
+    const commentData = {
+      content: commentContent,
+      authorId: userProfile.id,
+      postId: postId,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3001/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(commentData),
+      });
+
+      if (response.ok) {
+        /*         const newComment = await response.json();*/
+        setCommentContent("");
+      } else {
+        console.error("Falha ao enviar comentário");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar comentário:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleShareClick = () => {
@@ -359,7 +394,6 @@ const ContentPost = () => {
                     className={`${styles.postComment} ${
                       commentClicked ? styles.clicked : ""
                     }`}
-                    onClick={handleCommentClick}
                   >
                     <span
                       className={styles.commentText}
@@ -433,7 +467,7 @@ const ContentPost = () => {
                     />
                     <input
                       style={{
-                        fontFamily: "MontSerrat",
+                        fontFamily: "Montserrat",
                         background: "transparent",
                         border: "1px solid gray",
                         color: "white",
@@ -442,13 +476,18 @@ const ContentPost = () => {
                         ...(isFocused && focusedStyle),
                       }}
                       type="text"
-                      name="text"
-                      /*  value={postData.text} */
-                      /* onChange={handleInputChange} */
+                      name="comment"
+                      value={commentContent}
+                      onChange={(e) => setCommentContent(e.target.value)}
                       placeholder="Tem algo a dizer?"
                       className={styles.inputBox}
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
+                      onKeyPress={(event) => {
+                        if (event.key === "Enter") {
+                          handleCommentClick(post.id); // Chame a função de submissão e passe o ID do post
+                        }
+                      }}
                     />
                   </div>
 
