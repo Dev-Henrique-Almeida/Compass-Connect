@@ -4,7 +4,8 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatIcon from "@mui/icons-material/Chat";
 import ShareIcon from "@mui/icons-material/Share";
 import tempoIcon from "@/public/icons/timing.png";
-import defaultImagePost from "@/public/defaultImagePost.png";
+import defaultPost from "@/public/defaultImagePost.png";
+import defaultPostMobile from "@/public/defaultPostMobile.png";
 
 import {
   Avatar,
@@ -291,12 +292,14 @@ const ContentPost = () => {
                         alt="imagePost"
                         // Quando ocorrer um erro, a imagem padrão é usada
                         onError={(e) => {
-                          e.currentTarget.src = defaultImagePost.src;
+                          e.currentTarget.src = isMobile
+                            ? defaultPostMobile.src
+                            : defaultPost.src;
                         }}
                         style={{
                           width: "100%",
                           maxHeight: "500px",
-                          height: isMobile ? "300px" : "25rem",
+                          height: isMobile ? "300px" : "400px",
                           margin: 0,
                           padding: 0,
                         }}
