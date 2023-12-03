@@ -13,18 +13,6 @@ interface StoreState {
 
 const localStorageKey = "globalState";
 
-// const useStore = create<StoreState>((set) => ({
-
-//   open: false,
-//   selectedItem: "Página inicial",
-//   modalOpen: false,
-//   id: "",
-//   setOpen: (value) => set({ open: value }),
-//   setId: (value) => set({ id: value }),
-//   setSelectedItem: (item) => set({ selectedItem: item }),
-//   setModalOpen: (value) => set({ modalOpen: value }),
-// }));
-
 const useStore = create<StoreState>((set) => {
   const storedState = localStorage.getItem(localStorageKey);
   const initialState: StoreState = storedState

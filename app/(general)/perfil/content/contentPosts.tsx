@@ -101,7 +101,7 @@ const getUserInfo = async () => {
   }
 };
 
-const ContentPost = () => {
+const ContentMyPosts = () => {
   const [likeClicked, setLikeClicked] = useState(false);
   const [commentClicked, setCommentClicked] = useState(false);
   const [shareClicked, setShareClicked] = useState(false);
@@ -121,12 +121,17 @@ const ContentPost = () => {
     id: "",
   });
   const homePostStyle = {
+    width: modalOpen ? "calc(100% - 350px)" : "100%",
+    marginLeft: modalOpen ? "350px" : "0",
+  };
+
+  const homePostMobileStyle = {
     width: modalOpen ? "calc(83.3% - 350px)" : "83.3%",
     marginLeft: modalOpen ? "350px" : "0",
   };
+
   const mobileHomePostStyle = {
-    width: "92%",
-    marginLeft: "-5%",
+    width: "100%",
   };
   const focusedStyle = {
     border: "0.8px solid gray",
@@ -136,11 +141,16 @@ const ContentPost = () => {
   /* UseEffects */
 
   // Função para obter todos os posts
+  // Função para obter todos os posts do usuário logado
   useEffect(() => {
     const fetchData = async () => {
       const fetchedPosts = await getPosts();
+      const userId = localStorage.getItem("id"); // Obter o ID do usuário logado
       if (Array.isArray(fetchedPosts) && fetchedPosts.length > 0) {
-        setPosts(fetchedPosts);
+        const userPosts = fetchedPosts.filter(
+          (post) => post.author.id === userId
+        ); // Filtrar os posts pelo ID do autor
+        setPosts(userPosts);
       }
     };
     fetchData();
@@ -282,11 +292,22 @@ const ContentPost = () => {
   };
 
   return (
-    <section style={{ marginTop: isMobile ? "130px" : "140px" }}>
+    <Card
+      style={{
+        marginTop: isMobile ? "130px" : "140px",
+        height: "auto",
+        background: "#17181c",
+      }}
+    >
       <div className={styles.timeline}>
         <Box
           sx={{
-            width: isMobile ? "385px" : "auto",
+            position: "absolute",
+            top: isMobile ? "133%" : "173%",
+            left: isMobile ? "-18px" : "25%",
+            marginTop: isMobile ? "-130px" : "-1000px",
+            marginLeft: isMobile ? "26.5px" : "auto",
+            width: isMobile ? "370px" : "1370px",
             marginBottom: isMobile ? "15px" : "15px",
           }}
         >
@@ -356,23 +377,10 @@ const ContentPost = () => {
                               marginBottom: "-5px",
                             }}
                           />
-                          {getTimeSince(post.createdAt)}
-                          {post.location && (
-                            <>
-                              <span
-                                style={{
-                                  color: "var(--gray-gray-300, #75767D)",
-                                  fontWeight: 500,
-                                }}
-                              >
-                                {" "}
-                                em{" "}
-                              </span>
-                              <span style={{ color: "white", fontWeight: 500 }}>
-                                {post.location}
-                              </span>
-                            </>
-                          )}
+                          {getTimeSince(post.createdAt)} em{" "}
+                          <span style={{ color: "white", fontWeight: 500 }}>
+                            {post.location}
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -575,7 +583,7 @@ const ContentPost = () => {
                                 variant="h4"
                                 sx={{
                                   color: "white",
-                                  marginTop: "20px",
+                                  marginTop: "30px",
 
                                   fontSize: isMobile ? "12px" : "14px",
                                   fontWeight: 500,
@@ -691,8 +699,8 @@ const ContentPost = () => {
           ))}
         </Box>
       </div>
-    </section>
+    </Card>
   );
 };
 
-export default ContentPost;
+export default ContentMyPosts;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./contentPost.module.scss";
+import styles from "./contentIdPost.module.scss";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatIcon from "@mui/icons-material/Chat";
 import ShareIcon from "@mui/icons-material/Share";
@@ -77,16 +77,13 @@ const getPosts = async () => {
   }
 };
 
-const getUserInfo = async () => {
+const getUserInfo = async (userId: string) => {
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("id");
-
   if (token && userId) {
     try {
       const response = await fetch(`http://localhost:3001/users/${userId}`, {
         headers: {
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${token}`,
         },
       });
@@ -101,7 +98,7 @@ const getUserInfo = async () => {
   }
 };
 
-const ContentPost = () => {
+const ContentIdPosts = () => {
   const [likeClicked, setLikeClicked] = useState(false);
   const [commentClicked, setCommentClicked] = useState(false);
   const [shareClicked, setShareClicked] = useState(false);
@@ -110,7 +107,8 @@ const ContentPost = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { modalOpen, setId } = useStore();
+  const { modalOpen, id, setId } = useStore();
+
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const [showAllCommentsForPost, setShowAllCommentsForPost] =
@@ -121,12 +119,12 @@ const ContentPost = () => {
     id: "",
   });
   const homePostStyle = {
-    width: modalOpen ? "calc(83.3% - 350px)" : "83.3%",
+    width: modalOpen ? "calc(100% - 350px)" : "100%",
     marginLeft: modalOpen ? "350px" : "0",
   };
+
   const mobileHomePostStyle = {
-    width: "92%",
-    marginLeft: "-5%",
+    width: "100%",
   };
   const focusedStyle = {
     border: "0.8px solid gray",
@@ -135,21 +133,28 @@ const ContentPost = () => {
 
   /* UseEffects */
 
-  // Função para obter todos os posts
+  // Função para obter todos os posts do usuário que foi buscado
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedPosts = await getPosts();
-      if (Array.isArray(fetchedPosts) && fetchedPosts.length > 0) {
-        setPosts(fetchedPosts);
+      if (typeof id === "string") {
+        const fetchedPosts = await getPosts();
+
+        const userPosts = fetchedPosts.filter(
+          (post: Post) => post.author.id === id
+        );
+        setPosts(userPosts);
       }
     };
-    fetchData();
-  }, []);
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
 
   // Função para obter dados do usuário
   useEffect(() => {
     const fetchUserData = async () => {
-      const userData = await getUserInfo();
+      const userData = await getUserInfo(id);
       setUserProfile({
         name: userData.name,
         image: userData.image,
@@ -282,11 +287,22 @@ const ContentPost = () => {
   };
 
   return (
-    <section style={{ marginTop: isMobile ? "130px" : "140px" }}>
+    <Card
+      style={{
+        marginTop: isMobile ? "130px" : "140px",
+        height: "auto",
+        background: "#17181c",
+      }}
+    >
       <div className={styles.timeline}>
         <Box
           sx={{
-            width: isMobile ? "385px" : "auto",
+            position: "absolute",
+            top: isMobile ? "133%" : "173%",
+            left: isMobile ? "-18px" : "25%",
+            marginTop: isMobile ? "-130px" : "-1000px",
+            marginLeft: isMobile ? "26.5px" : "auto",
+            width: isMobile ? "370px" : "1370px",
             marginBottom: isMobile ? "15px" : "15px",
           }}
         >
@@ -356,23 +372,10 @@ const ContentPost = () => {
                               marginBottom: "-5px",
                             }}
                           />
-                          {getTimeSince(post.createdAt)}
-                          {post.location && (
-                            <>
-                              <span
-                                style={{
-                                  color: "var(--gray-gray-300, #75767D)",
-                                  fontWeight: 500,
-                                }}
-                              >
-                                {" "}
-                                em{" "}
-                              </span>
-                              <span style={{ color: "white", fontWeight: 500 }}>
-                                {post.location}
-                              </span>
-                            </>
-                          )}
+                          {getTimeSince(post.createdAt)} em{" "}
+                          <span style={{ color: "white", fontWeight: 500 }}>
+                            {post.location}
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -575,7 +578,7 @@ const ContentPost = () => {
                                 variant="h4"
                                 sx={{
                                   color: "white",
-                                  marginTop: "20px",
+                                  marginTop: "30px",
 
                                   fontSize: isMobile ? "12px" : "14px",
                                   fontWeight: 500,
@@ -691,8 +694,8 @@ const ContentPost = () => {
           ))}
         </Box>
       </div>
-    </section>
+    </Card>
   );
 };
 
-export default ContentPost;
+export default ContentIdPosts;

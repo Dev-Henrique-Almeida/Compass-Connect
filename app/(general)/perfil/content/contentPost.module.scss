@@ -1,0 +1,254 @@
+.faHome {
+  margin: 20px;
+  left: 530px;
+  width: 20px;
+  color: #f5f5f5;
+  z-index: 1;
+  margin-top: 12px;
+  background-color: #1e1f23;
+}
+
+.timeline {
+  background-color: #1e1f23;
+}
+
+.likeContainer {
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.iconClicked {
+  color: #e9b425;
+}
+.likedText {
+  color: #e9b425;
+}
+
+.flor {
+  position: absolute;
+  top: 20px;
+  left: 950px;
+  background: #1e1f23;
+}
+
+.homePost {
+  display: flex;
+  background: #1e1f23;
+  justify-content: flex-start;
+
+  padding: 16px;
+  border: 1px solid #2e2f36;
+  border-radius: 16px;
+  width: 75%;
+  height: 120px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.buttonPost {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.containerButton {
+  padding: 15px 24px;
+  align-items: flex-start;
+  border-radius: 46px;
+  border: 1px solid var(--orange, #9e1a00);
+  background: var(
+    --gradient-button,
+    linear-gradient(180deg, #ad2d14 0%, #f42e07 100%)
+  );
+  position: absolute;
+  bottom: 8px;
+  width: 100px;
+}
+
+.inputBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 24px;
+  height: 37px;
+  border-radius: 46px;
+  border-color: #757575 !important;
+  border-radius: 35px !important;
+}
+
+.accordions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  right: 2%;
+  top: 10%;
+  position: fixed;
+  z-index: 1;
+}
+
+.mainContent {
+  padding: 0px 36px;
+}
+
+@media (max-width: 767px) {
+  .mainContent {
+    margin-right: 0;
+  }
+}
+
+.faPhoto,
+.faImg,
+.faClip,
+.faMap,
+.faSmile {
+  display: inline-block;
+  width: 20px;
+  height: 60px;
+  background-color: #1e1f23;
+}
+
+.faImg,
+.faClip,
+.faMap,
+.faSmile {
+  margin-left: 20px;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 24px 20px;
+  gap: 24px;
+  margin-left: auto;
+  width: 230px;
+  height: 272px;
+  background: #1e1f23;
+  border: 1px solid #2e2f36;
+  border-radius: 16px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  overflow: hidden;
+}
+
+.container {
+  text-align: left;
+  background-color: #1e1f23;
+  width: 100%;
+}
+
+.menuOpen {
+  width: calc(100% - 240px);
+}
+
+.avatarContainer {
+  display: flex;
+  cursor: pointer;
+}
+
+.textBox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 24px;
+  height: 37px;
+  border-radius: 46px;
+}
+
+.avatarContainer input {
+  width: 900%;
+}
+
+@media (max-width: 767px) {
+  .accordions {
+    display: none;
+  }
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.productPrice {
+  color: var(--gray-gray-300, #75767d);
+  font-family: Poppins;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@media (max-width: 767px) {
+  .homePostStyle {
+    width: 99%;
+  }
+}
+
+/* TIMELINE */
+
+.timelinePost {
+  display: flex;
+  background: #1e1f23;
+  justify-content: flex-start;
+
+  padding: 16px;
+  border: 1px solid #2e2f36;
+  border-radius: 16px;
+  width: 75%;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.postInfo {
+  display: flex;
+  flex-direction: column;
+  color: #2e2f36;
+}
+
+/* Buttons */
+
+.postInteraction {
+  display: flex;
+  height: 35px;
+  padding: 10px 48px;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-self: stretch;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .postInteraction {
+    padding: 0px 0px;
+  }
+}
+
+.clicked {
+  color: var(--yellow, #e9b425);
+}
+
+/* COMMENTS */
+
+.everyComments {
+  color: #fff;
+  font-family: Poppins;
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 16px;
+}
+
+.seeAllComments {
+  text-align: center;
+
+  .seeAllCommentsText {
+    color: #e9b425;
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}

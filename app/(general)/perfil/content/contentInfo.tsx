@@ -13,6 +13,8 @@ import enderecoIcon from "@/public/icons/endereco-perfil.png";
 import dataIcon from "@/public/icons/data-perfil.png";
 import generoIcon from "@/public/icons/genero-perfil.png";
 import useStore from "../../../../store/store";
+import ContentPost from "../../home/content/contentPost";
+import ContentMyPosts from "./contentPosts";
 
 const theme = createTheme({
   typography: {
@@ -196,6 +198,7 @@ const ContentInfo = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
+
                 paddingBottom: 5,
                 paddingLeft: 2.8,
               }}
@@ -245,16 +248,21 @@ const ContentInfo = () => {
           <Box
             sx={{
               mt: 2,
-              ml: 5,
-              width: isMobile ? "80%" : "20%",
+              ml: isMobile ? -2 : 5,
+
+              width: isMobile ? "100%" : "20%",
             }}
           >
             <Card
               sx={{
                 display: "flex",
                 color: "#E9B425",
-                width: isMobile ? "300px" : "1050px",
+                ml: isMobile ? 1 : 3.7,
+
+                width: isMobile ? "370px" : "1360px",
                 background: "transparent",
+                marginTop: isMobile ? "10px" : "0",
+                height: "60px",
               }}
             >
               <Typography
@@ -262,7 +270,7 @@ const ContentInfo = () => {
                 sx={{
                   fontSize: 16,
                   fontWeight: "50",
-                  marginLeft: isMobile ? 0.5 : 50,
+                  marginLeft: isMobile ? 10 : 60,
                 }}
               >
                 Followers
@@ -282,6 +290,7 @@ const ContentInfo = () => {
                 sx={{
                   fontSize: 16,
                   fontWeight: "bold",
+
                   marginLeft: isMobile ? 3 : 10,
                 }}
               >
@@ -291,6 +300,7 @@ const ContentInfo = () => {
           </Box>
         </Box>
       </section>
+      <ContentMyPosts />
     </ThemeProvider>
   );
 };
