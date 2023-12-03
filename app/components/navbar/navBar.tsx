@@ -28,29 +28,6 @@ const theme = createTheme({
   },
 });
 
-const getUserInfo = async () => {
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("id");
-  if (token && userId) {
-    try {
-      const response = await fetch(`http://localhost:3001/users/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      }
-    } catch (error) {
-      console.error("Erro ao obter informações do usuário:", error);
-    }
-  }
-};
-
 const drawerWidth = 350;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -70,10 +47,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     marginLeft: 0,
   }),
 }));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -101,6 +74,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+/* Interfaces */
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
+
 interface NavbarProps {
   open: boolean;
   selectedItem: string;
@@ -110,6 +88,29 @@ interface NavbarProps {
   setModalOpen: (value: boolean) => void;
 }
 
+const getUserInfo = async () => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("id");
+  if (token && userId) {
+    try {
+      const response = await fetch(`http://localhost:3001/users/${userId}`, {
+        headers: {
+          "Content-Type": "application/json",
+
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch (error) {
+      console.error("Erro ao obter informações do usuário:", error);
+    }
+  }
+};
+
 export default function NavBar({
   open,
   selectedItem,
@@ -118,12 +119,14 @@ export default function NavBar({
   setSelectedItem,
   setModalOpen,
 }: NavbarProps) {
-  const theme = useTheme();
-  const router = useRouter();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [nome, setNome] = useState("");
   const [image, setImage] = useState("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter();
+  /* useEffects */
 
+  // Responsável por buscar as informações do usuário
   useEffect(() => {
     const fetchData = async () => {
       const userInfo = await getUserInfo();
@@ -137,6 +140,9 @@ export default function NavBar({
     fetchData();
   }, []);
 
+  /* Funções */
+
+  // Função responsável por limpar o localStorage
   const handleItemClick = (path: string, itemName: string) => {
     if (itemName === "Sair") {
       /* Limpa o localStorage para ter que fazer o acesso novamente */
@@ -150,11 +156,13 @@ export default function NavBar({
     }
   };
 
+  // Função responsável por abrir o menu
   const handleDrawerOpen = () => {
     setOpen(true);
     setModalOpen(true);
   };
 
+  // Função responsável por fechar o menu
   const handleDrawerClose = () => {
     setOpen(false);
     setModalOpen(false);
@@ -328,7 +336,7 @@ export default function NavBar({
               <Link
                 href="/perfil"
                 passHref
-                className={`${styles.linkFull} ${
+                className={`${styles.linkFull}  ${
                   selectedItem === "Meu Perfil" ? styles.activeLink : ""
                 }`}
                 onClick={() => handleItemClick("/perfil", "Meu Perfil")}

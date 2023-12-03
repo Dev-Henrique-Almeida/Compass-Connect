@@ -1,20 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
+import ContentInfo from "./contentInfo";
+import useStore from "@/store/store";
 import {
   Card,
   CardMedia,
   Avatar,
-  Button,
   Typography,
   Box,
   createTheme,
   ThemeProvider,
   useMediaQuery,
 } from "@mui/material";
-import styles from "./contentCard.module.scss";
-import ContentInfo from "./contentInfo";
-import useStore from "@/store/store";
 
 const theme = createTheme({
   typography: {
@@ -22,6 +19,7 @@ const theme = createTheme({
   },
 });
 
+// Função responsável por buscar os dados do usuário de forma assíncrona
 const getUserInfo = async (userId: string) => {
   const token = localStorage.getItem("token");
   if (token && userId) {
@@ -44,18 +42,20 @@ const getUserInfo = async (userId: string) => {
 };
 
 export default function MyIdPerfil() {
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [nome, setNome] = useState("");
   const [cargo, setCargo] = useState("");
   const [avatar, setAvatar] = useState("");
   const { modalOpen, id } = useStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const cardMarginLeft = modalOpen ? "1%" : "";
+
+  // Função para o conteúdo seguir o menu
   const homePostStyle = {
     width: modalOpen ? "calc(100% - 330px)" : "100%",
     marginLeft: modalOpen ? "330px" : "0",
   };
-  const cardMarginLeft = modalOpen ? "1%" : "";
 
+  // Função para buscar os dados do usuário baseado no id do mesmo
   useEffect(() => {
     console.error(id);
     const fetchData = async () => {

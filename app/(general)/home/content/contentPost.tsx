@@ -4,6 +4,8 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatIcon from "@mui/icons-material/Chat";
 import ShareIcon from "@mui/icons-material/Share";
 import tempoIcon from "@/public/icons/timing.png";
+import defaultImagePost from "@/public/defaultImagePost.png";
+
 import {
   Avatar,
   Box,
@@ -16,6 +18,7 @@ import {
 import useStore from "@/store/store";
 import { useRouter } from "next/navigation";
 
+/* Interfaces */
 interface Author {
   id: string;
   name: string;
@@ -27,6 +30,7 @@ interface Post {
   text: string;
   author: Author;
   location: string;
+  createdAt: string;
 }
 
 const theme = createTheme({
@@ -35,6 +39,7 @@ const theme = createTheme({
   },
 });
 
+/* Funções assíncronas */
 const getPosts = async () => {
   const token = localStorage.getItem("token");
 
@@ -50,7 +55,6 @@ const getPosts = async () => {
 
       if (response.ok) {
         const data = await response.json();
-
         return data;
       }
     } catch (error) {
@@ -88,12 +92,22 @@ const ContentPost = () => {
   const [commentClicked, setCommentClicked] = useState(false);
   const [shareClicked, setShareClicked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-  const { modalOpen, setId } = useStore();
   const [inputValue, setInputValue] = useState("Tem algo a dizer?");
-  const router = useRouter();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
   const [posts, setPosts] = useState<Post[]>([]);
+  const [userProfile, setUserProfile] = useState({ name: "", image: "" });
+  const { modalOpen, setId } = useStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter();
+  const homePostStyle = {
+    width: modalOpen ? "calc(83.3% - 350px)" : "83.3%",
+    marginLeft: modalOpen ? "350px" : "0",
+  };
+  const mobileHomePostStyle = {
+    width: "92%",
+    marginLeft: "-5%",
+  };
+
+  /* UseEffects */
   useEffect(() => {
     const fetchData = async () => {
       const fetchedPosts = await getPosts();
@@ -103,8 +117,6 @@ const ContentPost = () => {
     };
     fetchData();
   }, []);
-
-  const [userProfile, setUserProfile] = useState({ name: "", image: "" });
 
   useEffect(() => {
     // Função para obter dados do usuário
@@ -119,9 +131,13 @@ const ContentPost = () => {
     fetchUserData();
   }, []);
 
+  /* Funções */
+
+  // Função para o uso do input
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+
   const handleLikeClick = () => {
     setLikeClicked(!likeClicked);
     setLikeCount((prevCount) => prevCount + 1);
@@ -135,19 +151,35 @@ const ContentPost = () => {
     setShareClicked(!shareClicked);
   };
 
+  // Função para redirecionar para a tela de perfil do usuário
   const handleUserClick = (userId: string) => {
     // Navega para a página de perfil do usuário
     setId(userId);
     router.push(`/perfil/id=${userId}`);
   };
 
-  const homePostStyle = {
-    width: modalOpen ? "calc(83.3% - 350px)" : "83.3%",
-    marginLeft: modalOpen ? "350px" : "0",
-  };
-  const mobileHomePostStyle = {
-    width: "92%",
-    marginLeft: "-5%",
+  // Função para calcular o tempo decorrido desde a criação do post
+  const getTimeSince = (dateString: string) => {
+    const postDate = new Date(dateString).getTime();
+    const now = new Date().getTime();
+    const differenceInSeconds = Math.abs((now - postDate) / 1000);
+    const differenceInMinutes = Math.floor(differenceInSeconds / 60);
+
+    if (differenceInMinutes < 60) {
+      return `${differenceInMinutes} minutos atrás`;
+    }
+
+    const differenceInHours = Math.floor(differenceInMinutes / 60);
+    if (differenceInHours < 24) {
+      return `${differenceInHours} horas atrás`;
+    }
+
+    const differenceInDays = Math.floor(differenceInHours / 24);
+    if (differenceInDays < 7) {
+      return `${differenceInDays} dias atrás`;
+    }
+
+    return postDate.toLocaleString();
   };
 
   return (
@@ -225,7 +257,7 @@ const ContentPost = () => {
                               marginBottom: "-5px",
                             }}
                           />
-                          12 minutos atrás em{" "}
+                          {getTimeSince(post.createdAt)} em{" "}
                           <span style={{ color: "white", fontWeight: 500 }}>
                             {post.location}
                           </span>
@@ -233,7 +265,6 @@ const ContentPost = () => {
                       </div>
                     </div>
                   </div>
-
                   <Typography
                     variant="subtitle1"
                     sx={{
@@ -248,19 +279,25 @@ const ContentPost = () => {
                     {post.text}
                   </Typography>
 
-                  <div className={styles.postImage}>
-                    <img
-                      src={post.image}
-                      alt="imagePost"
-                      style={{
-                        width: "100%",
-                        maxHeight: "500px",
-                        height: "25rem",
-                        margin: 0,
-                        padding: 0,
-                      }}
-                    />
-                  </div>
+                  {post.image && (
+                    <div className={styles.postImage}>
+                      <img
+                        src={post.image}
+                        alt="imagePost"
+                        // Quando ocorrer um erro, a imagem padrão é usada
+                        onError={(e) => {
+                          e.currentTarget.src = defaultImagePost.src;
+                        }}
+                        style={{
+                          width: "100%",
+                          maxHeight: "500px",
+                          height: "25rem",
+                          margin: 0,
+                          padding: 0,
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className={styles.postInteraction}>

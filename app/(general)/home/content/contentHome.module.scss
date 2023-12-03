@@ -22,6 +22,11 @@
   width: 100px;
 }
 
+.whiteBorder {
+  border-color: #757575 !important;
+  border-radius: 35px !important;
+}
+
 .accordions {
   display: flex;
   flex-direction: column;
@@ -84,6 +89,8 @@
   padding: 8px 24px;
   height: 37px;
   border-radius: 46px;
+  border-color: #757575 !important;
+  border-radius: 35px !important;
 }
 
 .avatarContainer input {

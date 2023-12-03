@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -32,12 +31,7 @@ export default function ContentLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  // Função para verificar se o usuário está logado
-  const isUserLoggedIn = () => {
-    const token = localStorage.getItem("token");
-    return !!token; // Retorna true se o token existir, false caso contrário
-  };
-
+  // Checagem se o usuário já está logado
   useEffect(() => {
     if (isUserLoggedIn()) {
       // Se o usuário estiver logado, redirecione para a home
@@ -45,16 +39,31 @@ export default function ContentLogin() {
     }
   }, []);
 
+  // Função para deixar a senha visível
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  // Função para verificar se o usuário está logado
+  const isUserLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    return !!token; // Retorna true se o token existir, false caso contrário
+  };
+
+  // Função geral do login
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let isValid = true;
     setErrors({ username: "", password: "" });
 
-    if (password.length < 6 || password.length > 50) {
+    // Validação da senha
+    if (!password) {
+      setErrors((errors) => ({
+        ...errors,
+        password: "Senha não pode ser vazia.",
+      }));
+      isValid = false;
+    } else if (password.length < 6 || password.length > 50) {
       setErrors((errors) => ({
         ...errors,
         password: "Senha deve ter entre 6 e 50 caracteres.",
@@ -62,15 +71,14 @@ export default function ContentLogin() {
       isValid = false;
     }
 
-    if (password.length === 0) {
+    // Validação do username
+    if (!username) {
       setErrors((errors) => ({
         ...errors,
-        password: "Senha não pode ser vazia.",
+        username: "Usuário não pode ser vazio. ",
       }));
       isValid = false;
-    }
-
-    if (username.length > 255) {
+    } else if (username.length > 255) {
       setErrors((errors) => ({
         ...errors,
         username: "Usuário não pode ter mais de 255 caracteres. ",
@@ -78,14 +86,7 @@ export default function ContentLogin() {
       isValid = false;
     }
 
-    if (username.length === 0) {
-      setErrors((errors) => ({
-        ...errors,
-        username: "Usuário não pode ser vazio. ",
-      }));
-      isValid = false;
-    }
-
+    // Chega se o user é único
     if (isValid) {
       const isUnique = await checkUsernameUnique(username);
       if (!isUnique) {
@@ -93,7 +94,7 @@ export default function ContentLogin() {
         isValid = false;
       }
     }
-
+    // Se passar por todas as validações, é enviado um post para a API
     if (isValid) {
       try {
         const response = await fetch("http://localhost:3001/auth/login", {

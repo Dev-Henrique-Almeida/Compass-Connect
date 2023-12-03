@@ -20,6 +20,7 @@ const theme = createTheme({
   },
 });
 
+// Função responsável por buscar os dados do usuário de forma assíncrona
 const getUserInfo = async (userId: string) => {
   const token = localStorage.getItem("token");
   if (token && userId) {
@@ -42,18 +43,20 @@ const getUserInfo = async (userId: string) => {
 };
 
 const ContentInfo = () => {
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [sexo, setSexo] = useState("");
   const [nascimento, setNascimento] = useState("");
   const [endereco, setEndereco] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const { modalOpen, id } = useStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const cardMarginLeft = modalOpen ? "-50%" : "-57.5%";
+
+  // Função para o conteúdo seguir o menu
   const homePostStyle = {
     width: modalOpen ? "calc(100% - 330px)" : "100%",
     marginLeft: modalOpen ? "330px" : "0",
   };
-  const cardMarginLeft = modalOpen ? "-50%" : "-57.5%";
 
   // Função para obter o nome do mês em português
   const getMonthName = (monthIndex: number) => {
@@ -74,6 +77,7 @@ const ContentInfo = () => {
     return months[monthIndex];
   };
 
+  // Responsável por buscar todas as informações dos usuários pelo id
   useEffect(() => {
     console.error(id);
     const fetchData = async () => {
@@ -107,6 +111,7 @@ const ContentInfo = () => {
     fetchData();
   }, [id]);
 
+  // Constante para seleção de gêneros
   const formatSex = (sex: string) => {
     switch (sex) {
       case "Male":

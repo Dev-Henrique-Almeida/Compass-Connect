@@ -13,7 +13,9 @@ import {
   Box,
   Button,
   Card,
-  Divider,
+  Fade,
+  Modal,
+  TextField,
   ThemeProvider,
   createTheme,
   useMediaQuery,
@@ -33,12 +35,14 @@ const theme = createTheme({
   },
 });
 
+/* Interfaces */
 interface User {
   id: string;
   name: string;
   image: string;
 }
 
+/* Funções assíncronas */
 const getUserInfo = async () => {
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("id");
@@ -91,29 +95,45 @@ const getUsers = async (): Promise<User[]> => {
 };
 
 export default function ContentHome() {
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [inputValue, setInputValue] = useState("No que você está pensando?");
   const [users, setUsers] = useState<User[]>([]);
   const [image, setImage] = useState("");
+  const [shouldScroll, setShouldScroll] = useState(false);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [tempImageUrl, setTempImageUrl] = useState("");
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [tempLocation, setTempLocation] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
   const { modalOpen, setId } = useStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const router = useRouter();
 
+  // Para estilização do input
+  const focusedStyle = {
+    border: "0.8px solid gray",
+    padding: "9.6px 14.4px",
+  };
+
+  // Para o conteúdo seguir o menu
   const homePostStyle = {
     width: modalOpen ? "calc(80% - 350px)" : "80%",
     marginLeft: modalOpen ? "350px" : "0",
   };
+
+  // Checagem se a tela é mobile
   const mobileHomePostStyle = {
     width: "92%",
     marginLeft: "-5%",
   };
 
-  const [shouldScroll, setShouldScroll] = useState(false);
+  const [postData, setPostData] = useState({
+    text: "",
+    location: "",
+    image: "",
+    authorId: "",
+  });
 
-  // Função para verificar se o usuário está logado
-  const isUserLoggedIn = () => {
-    const token = localStorage.getItem("token");
-    return !!token; // Retorna true se o token existir, false caso contrário
-  };
-
+  /* useEffect para checar se o usuário está logado */
   useEffect(() => {
     if (!isUserLoggedIn()) {
       // Se o usuário não estiver logado, redirecione para a página de login
@@ -121,6 +141,7 @@ export default function ContentHome() {
     }
   }, []);
 
+  /* useEffect para mostrar apenas 4 usuários na aba "Meus amigos" */
   useEffect(() => {
     if (users.length > 4) {
       setShouldScroll(true);
@@ -129,17 +150,7 @@ export default function ContentHome() {
     }
   }, [users]);
 
-  const router = useRouter();
-
-  const handleUserClick = (userId: string) => {
-    // Navega para a página de perfil do usuário
-    setId(userId);
-    router.push(`/perfil/id=${userId}`);
-  };
-
   /* useEffect para o usuário logado */
-  const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchData = async () => {
       const userInfo = await getUserInfo();
@@ -154,7 +165,6 @@ export default function ContentHome() {
   }, []);
 
   /* useEffect para buscar os usuários cadastrados */
-
   useEffect(() => {
     const fetchData = async () => {
       const usersInfo: User[] = await getUsers();
@@ -175,8 +185,74 @@ export default function ContentHome() {
     fetchData();
   }, [loggedInUserId]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
+  /* Só para visualização/testes */
+  useEffect(() => {
+    console.log(postData.text);
+  }, [postData.text]);
+
+  /* Funções */
+
+  // Função para abrir o modal de input de imagem
+  const handleGalleryClick = () => {
+    setIsGalleryModalOpen(true);
+  };
+
+  // Função para abrir o modal de input da localização
+  const handleLocationClick = () => {
+    setIsLocationModalOpen(true);
+  };
+
+  const handleSetLocation = () => {
+    setPostData((prev) => ({ ...prev, location: tempLocation }));
+    setIsLocationModalOpen(false);
+  };
+
+  // Função para verificar se o usuário está logado
+  const isUserLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    return !!token; // Retorna true se o token existir, false caso contrário
+  };
+
+  // Função para redirecionar para a tela de perfil do usuário selecionado
+  const handleUserClick = (userId: string) => {
+    // Navega para a página de perfil do usuário
+    setId(userId);
+    router.push(`/perfil/id=${userId}`);
+  };
+
+  // Função para funcionar o input
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPostData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  // Função responsável por postar o item
+  const handlePostClick = async () => {
+    const token = localStorage.getItem("token");
+    const updatedPostData = {
+      ...postData,
+      authorId: loggedInUserId,
+    };
+
+    const response = await fetch("http://localhost:3001/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedPostData),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log("Post enviado com sucesso:", responseData);
+      setPostData({ text: "", location: "", image: "", authorId: "" });
+    } else {
+      console.error("Falha ao enviar post:", response.status);
+    }
   };
 
   return (
@@ -202,7 +278,6 @@ export default function ContentHome() {
             border: "1px solid #2e2f36",
             borderRadius: "16px",
             height: "120px",
-
             flex: "none",
             order: 0,
             flexGrow: 0,
@@ -221,19 +296,28 @@ export default function ContentHome() {
                   marginRight: "16px",
                 }}
               />
+
               <input
                 style={{
                   fontFamily: "MontSerrat",
                   background: "transparent",
                   border: "1px solid gray",
                   color: "white",
+                  padding: "10px 15px",
+                  outline: "none",
+                  ...(isFocused && focusedStyle),
                 }}
                 type="text"
-                value={inputValue}
-                onChange={handleChange}
+                name="text"
+                value={postData.text}
+                onChange={handleInputChange}
+                placeholder="No que você está pensando?"
                 className={styles.inputBox}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
               />
             </div>
+
             <Image
               src={cameraIcon}
               alt={"Câmera Icon"}
@@ -242,13 +326,21 @@ export default function ContentHome() {
             <Image
               src={galeriaIcon}
               alt={"Galeria Icon"}
+              onClick={handleGalleryClick}
               className={styles.galeria}
+              style={{
+                cursor: "pointer",
+              }}
             />
             <Image src={clipIcon} alt={"Clip Icon"} className={styles.clip} />
             <Image
               src={enderecoIcon}
               alt={"Endereço Icon"}
               className={styles.endereco}
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={handleLocationClick}
             />
             <Image
               src={emojiIcon}
@@ -257,7 +349,11 @@ export default function ContentHome() {
             />
 
             <div className={styles.buttonPost}>
-              <button type="submit" className={styles.postButton}>
+              <button
+                type="submit"
+                onClick={handlePostClick}
+                className={styles.postButton}
+              >
                 Postar
               </button>
             </div>
@@ -391,6 +487,158 @@ export default function ContentHome() {
           </div>
         </div>
       </Card>
+
+      {/* Modal para a imagem */}
+      <Modal
+        open={isGalleryModalOpen}
+        onClose={() => setIsGalleryModalOpen(false)}
+        closeAfterTransition
+      >
+        <Fade in={isGalleryModalOpen}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              background: "#17181c",
+              boxShadow: 24,
+              p: 4,
+              outline: "none",
+              borderRadius: "40px",
+            }}
+          >
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              sx={{ color: "white", display: "flex", justifyContent: "center" }}
+            >
+              Adicionar imagem
+            </Typography>
+
+            <TextField
+              label="Insira o URL da imagem"
+              value={tempImageUrl}
+              onChange={(e) => setTempImageUrl(e.target.value)}
+              fullWidth
+              margin="dense"
+              variant="outlined"
+              InputProps={{
+                style: {
+                  color: "white",
+                },
+                classes: {
+                  notchedOutline: styles.whiteBorder,
+                },
+              }}
+              InputLabelProps={{
+                style: { color: "#757575" },
+              }}
+            />
+            <Button
+              sx={{
+                color: "white",
+                borderRadius: "46px",
+                border: "1px solid var(--orange, #9e1a00)",
+                fontFamily: "MontSerrat",
+                fontWeight: "bold",
+                cursor: "pointer",
+                background:
+                  "var(--gradient-button,linear-gradient(180deg, #ad2d14 0%, #f42e07 100%))",
+                position: "relative",
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "15px",
+              }}
+              fullWidth
+              onClick={() => {
+                setPostData((prev) => ({ ...prev, image: tempImageUrl }));
+                setIsGalleryModalOpen(false);
+              }}
+            >
+              Definir URL da imagem
+            </Button>
+          </Box>
+        </Fade>
+      </Modal>
+
+      {/* Modal para a localização */}
+      <Modal
+        open={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        closeAfterTransition
+      >
+        <Fade in={isLocationModalOpen}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              background: "#17181c",
+              boxShadow: 24,
+              p: 4,
+              outline: "none",
+              borderRadius: "40px",
+            }}
+          >
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              sx={{ color: "white", display: "flex", justifyContent: "center" }}
+            >
+              Definir localização
+            </Typography>
+
+            <TextField
+              label="Insira a localização"
+              value={tempLocation}
+              onChange={(e) => setTempLocation(e.target.value)}
+              fullWidth
+              margin="dense"
+              variant="outlined"
+              InputProps={{
+                style: {
+                  color: "white",
+                },
+                classes: {
+                  notchedOutline: styles.whiteBorder,
+                },
+              }}
+              InputLabelProps={{
+                style: { color: "#757575" },
+              }}
+            />
+
+            <Button
+              sx={{
+                color: "white",
+                borderRadius: "46px",
+                border: "1px solid var(--orange, #9e1a00)",
+                fontFamily: "MontSerrat",
+                fontWeight: "bold",
+                cursor: "pointer",
+                background:
+                  "var(--gradient-button,linear-gradient(180deg, #ad2d14 0%, #f42e07 100%))",
+                position: "relative",
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "15px",
+              }}
+              fullWidth
+              onClick={handleSetLocation}
+            >
+              Definir localização
+            </Button>
+          </Box>
+        </Fade>
+      </Modal>
     </ThemeProvider>
   );
 }

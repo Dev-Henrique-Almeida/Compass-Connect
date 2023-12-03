@@ -1,5 +1,4 @@
 .main {
-  /* background: #17181c; */
   color: white;
   font-family: "Montserrat";
   overflow: hidden;
@@ -18,7 +17,7 @@
 }
 
 .linkFull:hover {
-  color: var(--orange, #fe2e05); /* Hover effect for non-active links */
+  color: var(--orange, #fe2e05);
 }
 
 .activeLink {
@@ -27,5 +26,5 @@
 }
 
 .activeLink:hover {
-  color: white; /* Hover effect for active link */
+  color: white;
 }

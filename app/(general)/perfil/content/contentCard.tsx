@@ -48,31 +48,37 @@ const getUserInfo = async () => {
 };
 
 export default function MyPerfil() {
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [nome, setNome] = useState("");
   const [cargo, setCargo] = useState("");
   const [avatar, setAvatar] = useState("");
   const { modalOpen } = useStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const cardMarginLeft = modalOpen ? "1%" : "";
+
+  const router = useRouter();
+
+  // Função para o conteúdo seguir o menu
   const homePostStyle = {
     width: modalOpen ? "calc(100% - 330px)" : "100%",
     marginLeft: modalOpen ? "330px" : "0",
   };
-  const router = useRouter();
+
   // Função para verificar se o usuário está logado
   const isUserLoggedIn = () => {
     const token = localStorage.getItem("token");
     return !!token; // Retorna true se o token existir, false caso contrário
   };
 
+  // Função para verificar se o usuário está logado e redirecionar para outra tela
   useEffect(() => {
     if (!isUserLoggedIn()) {
       // Se o usuário não estiver logado, redirecione para a página de login
       router.push("/login");
     }
   }, []);
-  const cardMarginLeft = modalOpen ? "1%" : "";
 
+  // Função responsável por buscar os dados do usuário de forma assíncrona
   useEffect(() => {
     const fetchData = async () => {
       const userInfo = await getUserInfo();

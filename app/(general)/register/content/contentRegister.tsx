@@ -165,9 +165,7 @@ export default function ContentRegister() {
         confirmPassword: "Confirmar a senha é obrigatório.",
       }));
       isValid = false;
-    }
-
-    if (password.length < 6 || password.length > 50) {
+    } else if (password.length < 6 || password.length > 50) {
       setErrors((errors) => ({
         ...errors,
         password: "Senha deve ter entre 6 e 50 caracteres.",
@@ -201,25 +199,21 @@ export default function ContentRegister() {
       isValid = false;
     } else if (!userUnique) {
       console.log(userUnique);
-
       setErrors((errors) => ({ ...errors, username: "Usuário já existe." }));
       isValid = false;
     }
 
     /* Validações para o nome */
-
-    if (nome.length > 255) {
-      setErrors((errors) => ({
-        ...errors,
-        nome: "Nome não pode ter mais de 255 caracteres. ",
-      }));
-      isValid = false;
-    }
-
     if (!nome) {
       setErrors((errors) => ({
         ...errors,
         nome: "Nome é obrigatório. ",
+      }));
+      isValid = false;
+    } else if (nome.length > 255) {
+      setErrors((errors) => ({
+        ...errors,
+        nome: "Nome não pode ter mais de 255 caracteres. ",
       }));
       isValid = false;
     }
@@ -276,7 +270,6 @@ export default function ContentRegister() {
           headers: {
             "Content-Type": "application/json",
             "Cache-Control": "no-cache",
-
             "User-Agent": "PostmanRuntime/7.35.0",
             Accept: "*/*",
             "Accept-Encoding": "gzip, deflate, br",

@@ -25,10 +25,18 @@ import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import useStore from "../../../../store/store";
 
+/* Interfaces */
+
 interface ProfileModalProps {
   open: boolean;
   onClose: () => void;
 }
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "Nunito",
+  },
+});
 
 const SlideTransition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -71,7 +79,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
   const [telefone, setTelefone] = useState("");
   const [url, setUrl] = useState("");
   const [id, setId] = useState("");
-
   const [errors, setErrors] = useState({
     nome: "",
     cargo: "",
@@ -81,7 +88,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     telefone: "",
     url: "",
   });
-
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  // Função responsável por buscar os dados do usuário de forma assíncrona
   useEffect(() => {
     const fetchData = async () => {
       const userInfo = await getUserInfo();
@@ -103,8 +111,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
 
     fetchData();
   }, [open]);
-
-  const router = useRouter();
 
   const applyDateMask = (value: string) => {
     let cleanValue = value.replace(/\D/g, "");
@@ -177,15 +183,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
 
     /* Validações para o Telefone */
 
-    if (!telefone) {
-      setErrors((errors) => ({
-        ...errors,
-        telefone: "Telefone é obrigatório. ",
-      }));
-      isValid = false;
-    }
-    /* Validações para o Telefone */
-
     if (!sexo) {
       setErrors((errors) => ({
         ...errors,
@@ -220,9 +217,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         cargo: "Cargo é obrigatório. ",
       }));
       isValid = false;
-    }
-
-    if (cargo.length > 255) {
+    } else if (cargo.length > 255) {
       setErrors((errors) => ({
         ...errors,
         cargo: "Cargo não pode ter mais de 255 caracteres. ",
@@ -237,9 +232,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         sexo: "Gênero é obrigatório. ",
       }));
       isValid = false;
-    }
-
-    if (sexo.length > 255) {
+    } else if (sexo.length > 255) {
       setErrors((errors) => ({
         ...errors,
         sexo: "Gênero não pode ter mais de 255 caracteres. ",
@@ -254,9 +247,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         nome: "Nome é obrigatório. ",
       }));
       isValid = false;
-    }
-
-    if (nome.length > 255) {
+    } else if (nome.length > 255) {
       setErrors((errors) => ({
         ...errors,
         nome: "Nome não pode ter mais de 255 caracteres. ",
@@ -271,9 +262,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         endereco: "Endereço é obrigatório. ",
       }));
       isValid = false;
-    }
-
-    if (endereco.length > 255) {
+    } else if (endereco.length > 255) {
       setErrors((errors) => ({
         ...errors,
         endereco: "Endereço não pode ter mais de 255 caracteres. ",
@@ -288,9 +277,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         telefone: "Telefone é obrigatório. ",
       }));
       isValid = false;
-    }
-
-    if (telefone.length > 255) {
+    } else if (telefone.length > 255) {
       setErrors((errors) => ({
         ...errors,
         telefone: "Telefone não pode ter mais de 255 caracteres. ",
@@ -324,6 +311,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       }
     }
 
+    // Se passar por todas as validações, é enviado um PUT, para a API
     if (isValid) {
       try {
         const userId = localStorage.getItem("id");
@@ -359,14 +347,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       console.log(formattedDate);
     }
   };
-
-  const theme = createTheme({
-    typography: {
-      fontFamily: "Nunito",
-    },
-  });
-
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <ThemeProvider theme={theme}>

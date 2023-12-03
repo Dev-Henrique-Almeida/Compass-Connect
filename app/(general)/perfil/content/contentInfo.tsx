@@ -44,18 +44,19 @@ const getUserInfo = async () => {
 };
 
 const ContentInfo = () => {
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [sexo, setSexo] = useState("");
   const [nascimento, setNascimento] = useState("");
   const [endereco, setEndereco] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const { modalOpen } = useStore();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const cardMarginLeft = modalOpen ? "-50%" : "-57.5%";
   const homePostStyle = {
     width: modalOpen ? "calc(100% - 330px)" : "100%",
     marginLeft: modalOpen ? "330px" : "0",
   };
-  const cardMarginLeft = modalOpen ? "-50%" : "-57.5%";
+
   // Função para obter o nome do mês em português
   const getMonthName = (monthIndex: number) => {
     const months = [
@@ -74,6 +75,19 @@ const ContentInfo = () => {
     ];
     return months[monthIndex];
   };
+
+  const formatSex = (sex: string) => {
+    switch (sex) {
+      case "Male":
+        return "Masculino";
+      case "Female":
+        return "Feminino";
+      default:
+        return "";
+    }
+  };
+
+  // Função responsável por buscar os dados do usuário de forma assíncrona
   useEffect(() => {
     const fetchData = async () => {
       let isMounted = true;
@@ -99,17 +113,6 @@ const ContentInfo = () => {
 
     fetchData();
   }, []);
-
-  const formatSex = (sex: string) => {
-    switch (sex) {
-      case "Male":
-        return "Masculino";
-      case "Female":
-        return "Feminino";
-      default:
-        return "";
-    }
-  };
 
   return (
     <ThemeProvider theme={theme}>
