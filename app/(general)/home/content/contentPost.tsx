@@ -26,17 +26,24 @@ interface Author {
   image: string;
 }
 
+interface Comment {
+  id: string;
+  content: string;
+  author: Author;
+}
+
 interface Post {
   image: string;
   text: string;
   author: Author;
   location: string;
   createdAt: string;
+  comments: Comment[];
 }
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Montserrat, Arial",
+    fontFamily: "Nunito, Arial",
   },
 });
 
@@ -96,7 +103,11 @@ const ContentPost = () => {
   /* const [inputValue, setInputValue] = useState("Tem algo a dizer?"); */
   const [isFocused, setIsFocused] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [userProfile, setUserProfile] = useState({ name: "", image: "" });
+  const [userProfile, setUserProfile] = useState({
+    name: "",
+    image: "",
+    id: "",
+  });
   const { modalOpen, setId } = useStore();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -131,6 +142,7 @@ const ContentPost = () => {
       setUserProfile({
         name: userData.name,
         image: userData.image,
+        id: userData.id,
       });
     };
 
@@ -415,6 +427,7 @@ const ContentPost = () => {
                         width: "32px",
                         height: "32px",
                         marginRight: "16px",
+
                         border: "1px solid #E9B425",
                       }}
                     />
@@ -444,7 +457,43 @@ const ContentPost = () => {
                       Todos os comentários
                     </span>
                   </div>
+                  {post.comments.map((comment) => (
+                    <div key={comment.id} className={styles.comment}>
+                      <div
+                        className={styles.avatarContainer}
+                        onClick={() => handleUserClick(comment.author.id)}
+                      >
+                        <Avatar
+                          alt={comment.author.name}
+                          src={comment.author.image}
+                          style={{
+                            marginTop: "20px",
+                            width: "32px",
+                            height: "32px",
+                            marginRight: "16px",
+                            border: "1px solid #E9B425",
+                          }}
+                        />
+                        <div className={styles.commentContent}>
+                          <Typography
+                            variant="h4"
+                            sx={{
+                              color: "white",
+                              marginTop: "20px",
 
+                              fontSize: isMobile ? "14px" : "15px",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {comment.author.name} {""}:{" "}
+                            <span style={{ fontWeight: "300" }}>
+                              {comment.content}
+                            </span>
+                          </Typography>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                   <Divider style={{ marginTop: "16px" }} />
 
                   <div className={styles.seeAllComments}>
