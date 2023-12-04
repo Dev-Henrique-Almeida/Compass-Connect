@@ -46,6 +46,13 @@ interface Post {
   likes: string;
 }
 
+interface PostState {
+  likeClicked: boolean;
+  commentContent: string;
+  hasLiked: boolean;
+  isSubmitting: boolean;
+}
+
 type ShowAllCommentsState = {
   [key: string]: boolean;
 };
@@ -123,6 +130,11 @@ const ContentPost = () => {
     image: "",
     id: "",
   });
+  const [postStates, setPostStates] = useState<{ [key: string]: PostState }>(
+    {}
+  );
+  const postStatesInit: { [key: string]: PostState } = {};
+
   const homePostStyle = {
     width: modalOpen ? "calc(83.3% - 350px)" : "83.3%",
     marginLeft: modalOpen ? "350px" : "0",
@@ -179,6 +191,35 @@ const ContentPost = () => {
     setInputValue(event.target.value);
   }; */
 
+  posts.forEach((post) => {
+    postStatesInit[post.id] = {
+      likeClicked: false,
+      commentContent: "",
+      hasLiked: false,
+      isSubmitting: false,
+    };
+  });
+
+  useEffect(() => {
+    const postStatesInit = {};
+    setPostStates(postStatesInit);
+  }, [posts]);
+
+  useEffect(() => {
+    const postStatesInit: { [key: string]: PostState } = {};
+
+    posts.forEach((post) => {
+      postStatesInit[post.id] = {
+        likeClicked: false,
+        commentContent: "",
+        hasLiked: false,
+        isSubmitting: false,
+      };
+    });
+
+    setPostStates(postStatesInit);
+  }, [posts]);
+
   const handleShowAllComments = (postId: string) => {
     setShowAllCommentsForPost((prevState: ShowAllCommentsState) => ({
       ...prevState,
@@ -188,10 +229,10 @@ const ContentPost = () => {
 
   // Função para mandar o like que o usuário deu, para o post que foi escolhido
   const handleLikeClick = async (postId: string) => {
-    if (hasLiked) {
-      // Checa se o usuário já curtiu para não poder curtir novamente
+    if (postStates[postId]?.hasLiked) {
       return;
     }
+
     try {
       const response = await fetch(
         `http://localhost:3001/posts/like/${postId}`,
@@ -205,16 +246,16 @@ const ContentPost = () => {
 
       if (response.ok) {
         const updatedPost = await response.json();
-        setHasLiked(true);
-        setPosts((currentPosts) => {
-          return currentPosts.map((post) => {
-            if (post.id === postId) {
-              return { ...post, likes: updatedPost.likes };
-            }
-            return post;
-          });
-        });
-        setLikeClicked(!likeClicked);
+
+        setPostStates((prevState) => ({
+          ...prevState,
+          [postId]: {
+            ...prevState[postId],
+            hasLiked: true,
+            likes: updatedPost.likes,
+            likeClicked: !prevState[postId].likeClicked,
+          },
+        }));
       } else {
         console.error("Falha ao curtir o post");
       }
@@ -225,12 +266,14 @@ const ContentPost = () => {
 
   // Função para o usuário comentar no post
   const handleCommentClick = async (postId: string) => {
-    if (!commentContent.trim()) return;
+    const postCommentContent = postStates[postId]?.commentContent;
+
+    if (!postCommentContent || !postCommentContent.trim()) return;
 
     setIsSubmitting(true);
 
     const commentData = {
-      content: commentContent,
+      content: postCommentContent,
       authorId: userProfile.id,
       postId: postId,
     };
@@ -246,8 +289,13 @@ const ContentPost = () => {
       });
 
       if (response.ok) {
-        /*         const newComment = await response.json();*/
-        setCommentContent("");
+        setPostStates((prevState) => ({
+          ...prevState,
+          [postId]: {
+            ...prevState[postId],
+            commentContent: "",
+          },
+        }));
       } else {
         console.error("Falha ao enviar comentário");
       }
@@ -429,32 +477,39 @@ const ContentPost = () => {
                 <div className={styles.postInteraction}>
                   <div
                     className={`${styles.postLike} ${
-                      likeClicked ? styles.clicked : ""
+                      postStates[post.id]?.likeClicked ? styles.clicked : ""
                     }`}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                    }}
                     onClick={() => handleLikeClick(post.id)}
                   >
-                    <div className={styles.likeContainer}>
-                      {" "}
-                      <ThumbUpIcon
-                        style={{
-                          width: "16px",
-                          height: "16px",
-                          marginRight: "5px",
-                        }}
-                        className={hasLiked ? `${styles.iconClicked}` : ""}
-                      />
-                      <span
-                        style={{
-                          fontSize: "12px",
-                        }}
-                        className={`${styles.likeText} ${
-                          hasLiked ? styles.likedText : ""
-                        }`}
-                      >
-                        {hasLiked ? "Curtiu" : "Curtir"} ({post.likes})
-                      </span>
-                    </div>{" "}
-                    {/* Feche a div aqui */}
+                    <ThumbUpIcon
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        marginRight: "5px",
+                      }}
+                      className={
+                        postStates[post.id]?.hasLiked
+                          ? `${styles.iconClicked}`
+                          : ""
+                      }
+                    />
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        lineHeight: "16px",
+                      }}
+                      className={`${styles.likeText} ${
+                        postStates[post.id]?.hasLiked ? styles.likedText : ""
+                      }`}
+                    >
+                      {postStates[post.id]?.hasLiked ? "Curtiu" : "Curtir"} (
+                      {post.likes})
+                    </span>
                   </div>
 
                   <div
@@ -544,8 +599,19 @@ const ContentPost = () => {
                       }}
                       type="text"
                       name="comment"
-                      value={commentContent}
-                      onChange={(e) => setCommentContent(e.target.value)}
+                      value={postStates[post.id]?.commentContent}
+                      onChange={(e) => {
+                        const newPostStates = { ...postStates };
+                        const newPostState = newPostStates[post.id] || {
+                          likeClicked: false,
+                          commentContent: "",
+                          hasLiked: false,
+                          isSubmitting: false,
+                        };
+                        newPostState.commentContent = e.target.value;
+                        newPostStates[post.id] = newPostState;
+                        setPostStates(newPostStates);
+                      }}
                       placeholder="Tem algo a dizer?"
                       className={styles.inputBox}
                       onFocus={() => setIsFocused(true)}

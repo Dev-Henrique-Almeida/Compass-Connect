@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ContentInfo from "./contentInfo";
 import useStore from "@/store/store";
+
 import {
   Card,
   CardMedia,
