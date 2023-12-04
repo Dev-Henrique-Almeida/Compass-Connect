@@ -199,11 +199,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
       }));
       isValid = false;
     } else {
-      const pattern = /\.(jpeg|jpg|png|webp)$/;
+      const pattern = /\.(jpeg|jpg|png|webp|gif)$/;
       if (!pattern.test(url)) {
         setErrors((errors) => ({
           ...errors,
-          url: "A URL deve ser de uma imagem válida (jpeg, jpg, png, webp).",
+          url: "A URL deve ser de uma imagem válida (jpeg, jpg, png, webp, gif).",
         }));
         isValid = false;
       }

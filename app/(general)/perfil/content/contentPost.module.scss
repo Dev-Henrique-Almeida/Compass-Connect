@@ -175,6 +175,11 @@
   color: white;
 }
 
+.whiteBorder {
+  border-color: #757575 !important;
+  border-radius: 35px !important;
+}
+
 .productPrice {
   color: var(--gray-gray-300, #75767d);
   font-family: Poppins;

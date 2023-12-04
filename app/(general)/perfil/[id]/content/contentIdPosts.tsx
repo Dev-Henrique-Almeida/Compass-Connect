@@ -372,10 +372,23 @@ const ContentIdPosts = () => {
                               marginBottom: "-5px",
                             }}
                           />
-                          {getTimeSince(post.createdAt)} em{" "}
-                          <span style={{ color: "white", fontWeight: 500 }}>
-                            {post.location}
-                          </span>
+                          {getTimeSince(post.createdAt)}
+                          {post.location && (
+                            <>
+                              <span
+                                style={{
+                                  color: "var(--gray-gray-300, #75767D)",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {" "}
+                                em{" "}
+                              </span>
+                              <span style={{ color: "white", fontWeight: 500 }}>
+                                {post.location}
+                              </span>
+                            </>
+                          )}
                         </p>
                       </div>
                     </div>
@@ -549,11 +562,19 @@ const ContentIdPosts = () => {
                     />
                   </div>
 
-                  <div className={styles.everyComments}>
-                    <span className={styles.everyCommentsText}>
-                      Todos os comentários
-                    </span>
-                  </div>
+                  {post.comments.length > 0 ? (
+                    <div className={styles.everyComments}>
+                      <span className={styles.everyCommentsText}>
+                        Todos os comentários
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={styles.everyComments}>
+                      <span className={styles.everyCommentsText}>
+                        Não há comentários ainda.
+                      </span>
+                    </div>
+                  )}
                   {post.comments.length > 1 ? (
                     showAllCommentsForPost[post.id] ? (
                       post.comments.map((comment) => (

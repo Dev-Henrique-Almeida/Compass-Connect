@@ -223,28 +223,6 @@ const ContentPost = () => {
     }
   };
 
-  const handleDeletePost = async (postId: string) => {
-    try {
-      const response = await fetch(`http://localhost:3001/posts/${postId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      if (response.ok) {
-        // Update the posts state to remove the deleted post
-        setPosts((currentPosts) =>
-          currentPosts.filter((post) => post.id !== postId)
-        );
-      } else {
-        console.error("Falha ao deletar o post");
-      }
-    } catch (error) {
-      console.error("Erro ao enviar requisição de deletar:", error);
-    }
-  };
-
   // Função para o usuário comentar no post
   const handleCommentClick = async (postId: string) => {
     if (!commentContent.trim()) return;
@@ -580,11 +558,19 @@ const ContentPost = () => {
                     />
                   </div>
 
-                  <div className={styles.everyComments}>
-                    <span className={styles.everyCommentsText}>
-                      Todos os comentários
-                    </span>
-                  </div>
+                  {post.comments.length > 0 ? (
+                    <div className={styles.everyComments}>
+                      <span className={styles.everyCommentsText}>
+                        Todos os comentários
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={styles.everyComments}>
+                      <span className={styles.everyCommentsText}>
+                        Não há comentários ainda.
+                      </span>
+                    </div>
+                  )}
                   {post.comments.length > 1 ? (
                     showAllCommentsForPost[post.id] ? (
                       post.comments.map((comment) => (

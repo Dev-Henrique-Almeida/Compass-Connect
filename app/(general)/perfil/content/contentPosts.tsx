@@ -13,11 +13,14 @@ import editarIcon from "@/public/icons/pencil.png";
 import {
   Avatar,
   Box,
+  Button,
   Card,
   Divider,
   IconButton,
   Menu,
   MenuItem,
+  Modal,
+  TextField,
   Typography,
   createTheme,
   useMediaQuery,
@@ -116,6 +119,10 @@ const ContentMyPosts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editText, setEditText] = useState("");
+  const [editImageUrl, setEditImageUrl] = useState("");
+  const [editLocation, setEditLocation] = useState("");
   const { modalOpen, setId } = useStore();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [currentPostId, setCurrentPostId] = useState<string | null>(null);
@@ -218,53 +225,6 @@ const ContentMyPosts = () => {
         console.error("Erro ao enviar requisição de deletar:", error);
       }
     }
-  };
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editablePost, setEditablePost] = useState({ text: "", authorId: "" });
-
-  const handleEditClick = (post: Post) => {
-    setIsEditModalOpen(true);
-    setEditablePost({ text: post.text, authorId: post.author.id });
-    setCurrentPostId(post.id);
-  };
-
-  const handleSubmitEdit = async () => {
-    if (currentPostId && editablePost.text) {
-      try {
-        const response = await fetch(
-          `http://localhost:3001/posts/${currentPostId}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify({
-              text: editablePost.text,
-              authorId: editablePost.authorId,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const updatedPost = await response.json();
-          setPosts((prevPosts) =>
-            prevPosts.map((post) =>
-              post.id === currentPostId ? updatedPost : post
-            )
-          );
-          setIsEditModalOpen(false);
-        } else {
-          console.error("Failed to update post.");
-        }
-      } catch (error) {
-        console.error("Error updating post:", error);
-      }
-    }
-  };
-
-  const handleTextChange = (e) => {
-    setEditablePost({ ...editablePost, text: e.target.value });
   };
 
   const handleShowAllComments = (postId: string) => {
@@ -381,6 +341,47 @@ const ContentMyPosts = () => {
     return postDate.toLocaleString();
   };
 
+  // Função para abrir o modal com as informações atuais do post
+  const handleEditClick = (post: Post) => {
+    setCurrentPostId(post.id);
+    setEditText(post.text);
+    setEditImageUrl(post.image);
+    setEditLocation(post.location);
+    setIsEditModalOpen(true);
+  };
+
+  // Função para o usuário poder editar um post
+  const handleUpdatePost = async () => {
+    if (currentPostId && editText && editImageUrl && editLocation) {
+      try {
+        const response = await fetch(
+          `http://localhost:3001/posts/${currentPostId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              text: editText,
+              image: editImageUrl,
+              location: editLocation,
+              authorId: userProfile.id,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          setIsEditModalOpen(false);
+        } else {
+          console.error("Falha ao atualizar o post");
+        }
+      } catch (error) {
+        console.error("Erro ao enviar requisição de atualização:", error);
+      }
+    }
+  };
+
   return (
     <Card
       style={{
@@ -455,13 +456,13 @@ const ContentMyPosts = () => {
                           "aria-labelledby": "basic-button",
                         }}
                         sx={{
-                          left: "-40px",
+                          left: isMobile ? "0px" : "-40px",
                         }}
                       >
                         <MenuItem
-                          onClick={() => {
-                            handleClose();
-                            handleEditClick(post);
+                          onClick={() => handleEditClick(post)}
+                          sx={{
+                            width: isMobile ? "100px" : "240px",
                           }}
                         >
                           <img
@@ -502,22 +503,6 @@ const ContentMyPosts = () => {
                             Deletar
                           </span>
                         </MenuItem>
-
-                        {isEditModalOpen && (
-                          <div className="your-modal-classname">
-                            <input
-                              type="text"
-                              value={editablePost.text}
-                              onChange={handleTextChange}
-                            />
-                            <button onClick={handleSubmitEdit}>
-                              Save Changes
-                            </button>
-                            <button onClick={() => setIsEditModalOpen(false)}>
-                              Cancel
-                            </button>
-                          </div>
-                        )}
                       </Menu>
                       <div className={styles.postDate}>
                         <p
@@ -539,10 +524,23 @@ const ContentMyPosts = () => {
                               marginBottom: "-5px",
                             }}
                           />
-                          {getTimeSince(post.createdAt)} em{" "}
-                          <span style={{ color: "white", fontWeight: 500 }}>
-                            {post.location}
-                          </span>
+                          {getTimeSince(post.createdAt)}
+                          {post.location && (
+                            <>
+                              <span
+                                style={{
+                                  color: "var(--gray-gray-300, #75767D)",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {" "}
+                                em{" "}
+                              </span>
+                              <span style={{ color: "white", fontWeight: 500 }}>
+                                {post.location}
+                              </span>
+                            </>
+                          )}
                         </p>
                       </div>
                     </div>
@@ -554,7 +552,8 @@ const ContentMyPosts = () => {
                       aria-expanded={open ? "true" : undefined}
                       style={{
                         color: "white",
-                        marginLeft: "81%",
+                        position: "absolute",
+                        marginLeft: isMobile ? "83%" : "95%",
                       }}
                     >
                       <MoreHorizIcon />
@@ -729,11 +728,20 @@ const ContentMyPosts = () => {
                     />
                   </div>
 
-                  <div className={styles.everyComments}>
-                    <span className={styles.everyCommentsText}>
-                      Todos os comentários
-                    </span>
-                  </div>
+                  {post.comments.length > 0 ? (
+                    <div className={styles.everyComments}>
+                      <span className={styles.everyCommentsText}>
+                        Todos os comentários
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={styles.everyComments}>
+                      <span className={styles.everyCommentsText}>
+                        Não há comentários ainda.
+                      </span>
+                    </div>
+                  )}
+
                   {post.comments.length > 1 ? (
                     showAllCommentsForPost[post.id] ? (
                       post.comments.map((comment) => (
@@ -765,7 +773,12 @@ const ContentMyPosts = () => {
                                 }}
                               >
                                 {comment.author.name} {""}:{" "}
-                                <span style={{ fontWeight: "300" }}>
+                                <span
+                                  style={{
+                                    fontWeight: "100",
+                                    fontSize: isMobile ? "10px" : "12px",
+                                  }}
+                                >
                                   {comment.content}
                                 </span>
                               </Typography>
@@ -872,6 +885,117 @@ const ContentMyPosts = () => {
               </Card>
             </Box>
           ))}
+          <Modal
+            open={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            closeAfterTransition
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: isMobile ? 350 : 400,
+                bgcolor: "background.paper",
+                background: "#17181c",
+                boxShadow: 24,
+                p: 4,
+                outline: "none",
+                borderRadius: "40px",
+              }}
+            >
+              <Typography
+                id="transition-modal-title"
+                variant="h6"
+                component="h2"
+                sx={{
+                  color: "white",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                Editar Post
+              </Typography>
+              <TextField
+                label="Insira um texto"
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+                fullWidth
+                margin="dense"
+                variant="outlined"
+                InputProps={{
+                  style: {
+                    color: "white",
+                  },
+                  classes: {
+                    notchedOutline: styles.whiteBorder,
+                  },
+                }}
+                InputLabelProps={{
+                  style: { color: "#757575" },
+                }}
+              />
+              <TextField
+                label="Insira a url de uma imagem"
+                value={editImageUrl}
+                onChange={(e) => setEditImageUrl(e.target.value)}
+                fullWidth
+                margin="dense"
+                variant="outlined"
+                InputProps={{
+                  style: {
+                    color: "white",
+                  },
+                  classes: {
+                    notchedOutline: styles.whiteBorder,
+                  },
+                }}
+                InputLabelProps={{
+                  style: { color: "#757575" },
+                }}
+              />
+              <TextField
+                label="Insira a localização"
+                value={editLocation}
+                onChange={(e) => setEditLocation(e.target.value)}
+                fullWidth
+                margin="dense"
+                variant="outlined"
+                InputProps={{
+                  style: {
+                    color: "white",
+                  },
+                  classes: {
+                    notchedOutline: styles.whiteBorder,
+                  },
+                }}
+                InputLabelProps={{
+                  style: { color: "#757575" },
+                }}
+              />
+              <Button
+                sx={{
+                  color: "white",
+                  borderRadius: "46px",
+                  border: "1px solid var(--orange, #9e1a00)",
+                  fontFamily: "MontSerrat",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  background:
+                    "var(--gradient-button,linear-gradient(180deg, #ad2d14 0%, #f42e07 100%))",
+                  position: "relative",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "15px",
+                }}
+                onClick={handleUpdatePost}
+                fullWidth
+              >
+                Salvar Alterações
+              </Button>
+            </Box>
+          </Modal>
         </Box>
       </div>
     </Card>
