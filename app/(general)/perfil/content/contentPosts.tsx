@@ -678,7 +678,10 @@ const ContentMyPosts = () => {
                       }`}
                     >
                       {postStates[post.id]?.hasLiked ? "Curtiu" : "Curtir"} (
-                      {post.likes})
+                      {postStates[post.id]?.hasLiked
+                        ? Number(post.likes) + 1
+                        : post.likes}
+                      )
                     </span>
                   </div>
 

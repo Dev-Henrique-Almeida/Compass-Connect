@@ -20,10 +20,8 @@ import cargoIcon from "@/public/icons/cargo.png";
 import generoIcon from "@/public/icons/genero.png";
 import enderecoIcon from "@/public/icons/localizacao.png";
 import telefoneIcon from "@/public/icons/telefone.png";
-import { useRouter } from "next/navigation";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
-import useStore from "../../../../store/store";
 
 /* Interfaces */
 
@@ -703,6 +701,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                   },
                 }}
               />
+
               <Button
                 type="reset"
                 fullWidth

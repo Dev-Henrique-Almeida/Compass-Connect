@@ -462,7 +462,7 @@ export default function ContentHome() {
                 border: "2px solid var(--gray-gray-600, #2E2F36)",
                 background: "var(--gray-gray-700, #1E1F23)",
                 marginTop: "20px",
-                maxHeight: shouldScrollDestaque ? "300px" : "none",
+                maxHeight: shouldScrollDestaque ? "345px" : "none",
               }}
               className={
                 shouldScrollDestaque ? styles.scrollHiddenDestaque : ""
@@ -497,7 +497,7 @@ export default function ContentHome() {
                   <div className={styles.productInfo}>
                     <Typography>{item.name}</Typography>
                     <Typography className={styles.productPrice}>
-                      R$ {item.price.toFixed(2)}
+                      R$ {item.price.toFixed(2).replace(".", ",")}
                     </Typography>
                   </div>
                 </AccordionDetails>
