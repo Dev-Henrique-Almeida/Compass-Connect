@@ -422,25 +422,36 @@ export default function ContentHome() {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                <Typography>Itens em Destaque </Typography>
+                <Typography style={{ color: "white" }}>
+                  Itens em Destaque{" "}
+                </Typography>
               </AccordionSummary>
               <AccordionDetails
                 style={{
                   display: "flex",
+                  alignItems: "center",
                 }}
               >
                 <Avatar
                   alt="Remy Sharp"
+                  src={""}
                   style={{
-                    width: isMobile ? "20px" : "32px",
+                    width: "32px",
                     height: "32px",
+                    marginRight: "16px",
                   }}
                 />
-                <Typography>Armário Grande</Typography>
+                <div className={styles.productInfo}>
+                  <Typography>Armário Grande</Typography>
+                  <Typography className={styles.productPrice}>
+                    R$ 500,00
+                  </Typography>
+                </div>
               </AccordionDetails>
               <AccordionDetails
                 style={{
                   display: "flex",
+                  alignItems: "center",
                 }}
               >
                 <Avatar
@@ -449,28 +460,20 @@ export default function ContentHome() {
                   style={{
                     width: "32px",
                     height: "32px",
+                    marginRight: "16px",
                   }}
                 />
-                <Typography>Armário Grande</Typography>
-              </AccordionDetails>{" "}
-              <AccordionDetails
-                style={{
-                  display: "flex",
-                }}
-              >
-                <Avatar
-                  alt="Remy Sharp"
-                  src={""}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                  }}
-                />
-                <Typography>Armário Grande</Typography>
+                <div className={styles.productInfo}>
+                  <Typography>Armário Grande</Typography>
+                  <Typography className={styles.productPrice}>
+                    R$ 500,00
+                  </Typography>
+                </div>
               </AccordionDetails>
               <AccordionDetails
                 style={{
                   display: "flex",
+                  alignItems: "center",
                 }}
               >
                 <Avatar
@@ -479,9 +482,37 @@ export default function ContentHome() {
                   style={{
                     width: "32px",
                     height: "32px",
+                    marginRight: "16px",
                   }}
                 />
-                <Typography>Armário Grande</Typography>
+                <div className={styles.productInfo}>
+                  <Typography>Armário Grande</Typography>
+                  <Typography className={styles.productPrice}>
+                    R$ 500,00
+                  </Typography>
+                </div>
+              </AccordionDetails>
+              <AccordionDetails
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar
+                  alt="Remy Sharp"
+                  src={""}
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    marginRight: "16px",
+                  }}
+                />
+                <div className={styles.productInfo}>
+                  <Typography>Armário Grande</Typography>
+                  <Typography className={styles.productPrice}>
+                    R$ 500,00
+                  </Typography>
+                </div>
               </AccordionDetails>
             </Accordion>
           </div>

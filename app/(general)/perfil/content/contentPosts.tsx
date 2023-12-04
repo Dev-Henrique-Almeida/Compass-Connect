@@ -6,12 +6,18 @@ import ShareIcon from "@mui/icons-material/Share";
 import tempoIcon from "@/public/icons/timing.png";
 import defaultPost from "@/public/defaultImagePost.png";
 import defaultPostMobile from "@/public/defaultPostMobile.png";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import deletarIcon from "@/public/icons/trash.png";
+import editarIcon from "@/public/icons/pencil.png";
 
 import {
   Avatar,
   Box,
   Card,
   Divider,
+  IconButton,
+  Menu,
+  MenuItem,
   Typography,
   createTheme,
   useMediaQuery,
@@ -112,6 +118,16 @@ const ContentMyPosts = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { modalOpen, setId } = useStore();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [currentPostId, setCurrentPostId] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    postId: string
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentPostId(postId);
+  };
   const router = useRouter();
   const [showAllCommentsForPost, setShowAllCommentsForPost] =
     useState<ShowAllCommentsState>({});
@@ -120,13 +136,9 @@ const ContentMyPosts = () => {
     image: "",
     id: "",
   });
+
   const homePostStyle = {
     width: modalOpen ? "calc(100% - 350px)" : "100%",
-    marginLeft: modalOpen ? "350px" : "0",
-  };
-
-  const homePostMobileStyle = {
-    width: modalOpen ? "calc(83.3% - 350px)" : "83.3%",
     marginLeft: modalOpen ? "350px" : "0",
   };
 
@@ -138,9 +150,12 @@ const ContentMyPosts = () => {
     padding: "9.6px 14.4px",
   };
 
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   /* UseEffects */
 
-  // Função para obter todos os posts
   // Função para obter todos os posts do usuário logado
   useEffect(() => {
     const fetchData = async () => {
@@ -176,6 +191,81 @@ const ContentMyPosts = () => {
   /*   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   }; */
+
+  // Função para deletar o post
+  const handleDeletePost = async () => {
+    if (currentPostId) {
+      try {
+        const response = await fetch(
+          `http://localhost:3001/posts/${currentPostId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setPosts((currentPosts) =>
+            currentPosts.filter((post) => post.id !== currentPostId)
+          );
+          setCurrentPostId(null);
+        } else {
+          console.error("Falha ao deletar o post");
+        }
+      } catch (error) {
+        console.error("Erro ao enviar requisição de deletar:", error);
+      }
+    }
+  };
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editablePost, setEditablePost] = useState({ text: "", authorId: "" });
+
+  const handleEditClick = (post: Post) => {
+    setIsEditModalOpen(true);
+    setEditablePost({ text: post.text, authorId: post.author.id });
+    setCurrentPostId(post.id);
+  };
+
+  const handleSubmitEdit = async () => {
+    if (currentPostId && editablePost.text) {
+      try {
+        const response = await fetch(
+          `http://localhost:3001/posts/${currentPostId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              text: editablePost.text,
+              authorId: editablePost.authorId,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const updatedPost = await response.json();
+          setPosts((prevPosts) =>
+            prevPosts.map((post) =>
+              post.id === currentPostId ? updatedPost : post
+            )
+          );
+          setIsEditModalOpen(false);
+        } else {
+          console.error("Failed to update post.");
+        }
+      } catch (error) {
+        console.error("Error updating post:", error);
+      }
+    }
+  };
+
+  const handleTextChange = (e) => {
+    setEditablePost({ ...editablePost, text: e.target.value });
+  };
 
   const handleShowAllComments = (postId: string) => {
     setShowAllCommentsForPost((prevState: ShowAllCommentsState) => ({
@@ -327,12 +417,7 @@ const ContentMyPosts = () => {
                 }}
               >
                 <div className={styles.postHeader}>
-                  <div
-                    className={styles.avatarContainer}
-                    onClick={() => {
-                      handleUserClick(post.author.id);
-                    }}
-                  >
+                  <div className={styles.avatarContainer}>
                     <Avatar
                       alt={post.author.name}
                       src={post.author.image}
@@ -341,6 +426,9 @@ const ContentMyPosts = () => {
                         height: "32px",
                         marginRight: "16px",
                         border: "1px solid #E9B425",
+                      }}
+                      onClick={() => {
+                        handleUserClick(post.author.id);
                       }}
                     />
                     <div className={styles.postInfo}>
@@ -357,6 +445,80 @@ const ContentMyPosts = () => {
                           {post.author.name}
                         </h4>
                       </div>
+
+                      <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        MenuListProps={{
+                          "aria-labelledby": "basic-button",
+                        }}
+                        sx={{
+                          left: "-40px",
+                        }}
+                      >
+                        <MenuItem
+                          onClick={() => {
+                            handleClose();
+                            handleEditClick(post);
+                          }}
+                        >
+                          <img
+                            src={editarIcon.src}
+                            alt="Editar Icon"
+                            style={{
+                              height: "18px",
+                              width: "18px",
+                            }}
+                          />
+                          <span
+                            style={{
+                              marginLeft: "5px",
+                            }}
+                          >
+                            Editar
+                          </span>
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => {
+                            handleClose();
+                            handleDeletePost();
+                          }}
+                        >
+                          <img
+                            src={deletarIcon.src}
+                            alt="Deletar Icon"
+                            style={{
+                              height: "18px",
+                              width: "18px",
+                            }}
+                          />
+                          <span
+                            style={{
+                              marginLeft: "5px",
+                            }}
+                          >
+                            Deletar
+                          </span>
+                        </MenuItem>
+
+                        {isEditModalOpen && (
+                          <div className="your-modal-classname">
+                            <input
+                              type="text"
+                              value={editablePost.text}
+                              onChange={handleTextChange}
+                            />
+                            <button onClick={handleSubmitEdit}>
+                              Save Changes
+                            </button>
+                            <button onClick={() => setIsEditModalOpen(false)}>
+                              Cancel
+                            </button>
+                          </div>
+                        )}
+                      </Menu>
                       <div className={styles.postDate}>
                         <p
                           style={{
@@ -384,6 +546,19 @@ const ContentMyPosts = () => {
                         </p>
                       </div>
                     </div>
+                    <IconButton
+                      onClick={(event) => handleClick(event, post.id)}
+                      id="basic-button"
+                      aria-controls={open ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                      style={{
+                        color: "white",
+                        marginLeft: "81%",
+                      }}
+                    >
+                      <MoreHorizIcon />
+                    </IconButton>
                   </div>
                   <Typography
                     variant="subtitle1"

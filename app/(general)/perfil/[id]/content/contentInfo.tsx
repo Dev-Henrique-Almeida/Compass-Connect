@@ -13,7 +13,6 @@ import enderecoIcon from "@/public/icons/endereco-perfil.png";
 import dataIcon from "@/public/icons/data-perfil.png";
 import generoIcon from "@/public/icons/genero-perfil.png";
 import useStore from "@/store/store";
-import ContentMyPosts from "../../content/contentPosts";
 import ContentIdPosts from "./contentIdPosts";
 
 const theme = createTheme({

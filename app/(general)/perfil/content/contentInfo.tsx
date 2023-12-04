@@ -174,7 +174,9 @@ const ContentInfo = () => {
                 width={20}
                 height={20}
               />
-              <Typography variant="subtitle1">{sexo}</Typography>
+              <Typography variant="subtitle1">
+                {sexo || "Não Informado"}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -191,7 +193,9 @@ const ContentInfo = () => {
                 width={20}
                 height={20}
               />
-              <Typography variant="subtitle1">{nascimento}</Typography>
+              <Typography variant="subtitle1">
+                {nascimento || "Não Informado"}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -209,7 +213,9 @@ const ContentInfo = () => {
                 width={20}
                 height={20}
               />
-              <Typography variant="subtitle1">{endereco}</Typography>
+              <Typography variant="subtitle1">
+                {endereco || "Não Informado"}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -226,7 +232,9 @@ const ContentInfo = () => {
                 width={20}
                 height={20}
               />
-              <Typography variant="subtitle1">{email}</Typography>
+              <Typography variant="subtitle1">
+                {email || "Não Informado"}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -242,7 +250,9 @@ const ContentInfo = () => {
                 width={20}
                 height={20}
               />
-              <Typography variant="subtitle1">{telefone}</Typography>
+              <Typography variant="subtitle1">
+                {telefone || "Não Informado"}
+              </Typography>
             </Box>
           </Card>
           <Box

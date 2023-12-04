@@ -12,6 +12,9 @@ import {
   Box,
   Card,
   Divider,
+  IconButton,
+  Menu,
+  MenuItem,
   Typography,
   createTheme,
   useMediaQuery,
@@ -133,6 +136,15 @@ const ContentPost = () => {
     padding: "9.6px 14.4px",
   };
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   /* UseEffects */
 
   // Função para obter todos os posts
@@ -208,6 +220,28 @@ const ContentPost = () => {
       }
     } catch (error) {
       console.error("Erro ao enviar requisição de curtir:", error);
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    try {
+      const response = await fetch(`http://localhost:3001/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.ok) {
+        // Update the posts state to remove the deleted post
+        setPosts((currentPosts) =>
+          currentPosts.filter((post) => post.id !== postId)
+        );
+      } else {
+        console.error("Falha ao deletar o post");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar requisição de deletar:", error);
     }
   };
 
