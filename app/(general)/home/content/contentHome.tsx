@@ -42,6 +42,19 @@ interface User {
   image: string;
 }
 
+interface MarketItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string | null;
+  vendido: boolean;
+  createdAt: string;
+  updatedAt: string;
+  sellerId: string;
+  buyerId: string | null;
+}
+
 /* Funções assíncronas */
 const getUserInfo = async () => {
   const token = localStorage.getItem("token");
@@ -65,6 +78,26 @@ const getUserInfo = async () => {
       console.error("Erro ao obter informações do usuário:", error);
     }
   }
+};
+
+const getMarketItems = async (): Promise<MarketItem[]> => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await fetch("http://localhost:3001/market", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.error("Erro ao obter itens do mercado:", error);
+  }
+  return [];
 };
 
 const getUsers = async (): Promise<User[]> => {
@@ -98,12 +131,14 @@ export default function ContentHome() {
   const [users, setUsers] = useState<User[]>([]);
   const [image, setImage] = useState("");
   const [shouldScroll, setShouldScroll] = useState(false);
+  const [shouldScrollDestaque, setshouldScrollDestaque] = useState(false);
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [tempImageUrl, setTempImageUrl] = useState("");
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [tempLocation, setTempLocation] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
+  const [marketItems, setMarketItems] = useState<MarketItem[]>([]);
   const { modalOpen, setId } = useStore();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -149,6 +184,18 @@ export default function ContentHome() {
       setShouldScroll(false);
     }
   }, [users]);
+
+  useEffect(() => {
+    setshouldScrollDestaque(marketItems.length > 4);
+  }, [marketItems]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const items = await getMarketItems();
+      setMarketItems(items);
+    };
+    fetchData();
+  }, []);
 
   /* useEffect para o usuário logado */
   useEffect(() => {
@@ -411,11 +458,15 @@ export default function ContentHome() {
               style={{
                 width: "272px",
                 borderRadius: "16px",
+                color: "white",
                 border: "2px solid var(--gray-gray-600, #2E2F36)",
                 background: "var(--gray-gray-700, #1E1F23)",
-                color: "white",
                 marginTop: "20px",
+                maxHeight: shouldScrollDestaque ? "300px" : "none",
               }}
+              className={
+                shouldScrollDestaque ? styles.scrollHiddenDestaque : ""
+              }
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
@@ -426,94 +477,31 @@ export default function ContentHome() {
                   Itens em Destaque{" "}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar
-                  alt="Remy Sharp"
-                  src={""}
+              {marketItems.map((item, index) => (
+                <AccordionDetails
+                  key={index}
                   style={{
-                    width: "32px",
-                    height: "32px",
-                    marginRight: "16px",
+                    display: "flex",
+                    alignItems: "center",
                   }}
-                />
-                <div className={styles.productInfo}>
-                  <Typography>Armário Grande</Typography>
-                  <Typography className={styles.productPrice}>
-                    R$ 500,00
-                  </Typography>
-                </div>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar
-                  alt="Remy Sharp"
-                  src={""}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    marginRight: "16px",
-                  }}
-                />
-                <div className={styles.productInfo}>
-                  <Typography>Armário Grande</Typography>
-                  <Typography className={styles.productPrice}>
-                    R$ 500,00
-                  </Typography>
-                </div>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar
-                  alt="Remy Sharp"
-                  src={""}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    marginRight: "16px",
-                  }}
-                />
-                <div className={styles.productInfo}>
-                  <Typography>Armário Grande</Typography>
-                  <Typography className={styles.productPrice}>
-                    R$ 500,00
-                  </Typography>
-                </div>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar
-                  alt="Remy Sharp"
-                  src={""}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    marginRight: "16px",
-                  }}
-                />
-                <div className={styles.productInfo}>
-                  <Typography>Armário Grande</Typography>
-                  <Typography className={styles.productPrice}>
-                    R$ 500,00
-                  </Typography>
-                </div>
-              </AccordionDetails>
+                >
+                  <Avatar
+                    alt={item.name}
+                    src={item.image || ""}
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      marginRight: "16px",
+                    }}
+                  />
+                  <div className={styles.productInfo}>
+                    <Typography>{item.name}</Typography>
+                    <Typography className={styles.productPrice}>
+                      R$ {item.price.toFixed(2)}
+                    </Typography>
+                  </div>
+                </AccordionDetails>
+              ))}
             </Accordion>
           </div>
         </div>

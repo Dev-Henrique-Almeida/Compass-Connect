@@ -71,6 +71,15 @@
     display: none;
   }
 }
+.scrollHiddenDestaque {
+  max-height: 500px;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
 
 .container {
   text-align: left;
