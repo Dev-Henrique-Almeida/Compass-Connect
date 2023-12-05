@@ -19,5 +19,6 @@ describe("ContentLogin Component", () => {
 
     expect(usernameInput.value).not.toBe("testuser");
     expect(passwordInput.value).not.toBe("password");
+    console.log(passwordInput);
   });
 });

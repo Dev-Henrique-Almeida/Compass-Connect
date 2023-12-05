@@ -1,7 +1,13 @@
 "use client";
 import * as React from "react";
 import styles from "./contentItem.module.scss";
-import { Button, Typography, createTheme, useMediaQuery } from "@mui/material";
+import {
+  Button,
+  Skeleton,
+  Typography,
+  createTheme,
+  useMediaQuery,
+} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import IconButton from "@mui/material/IconButton";
@@ -48,8 +54,8 @@ const ContentItem = () => {
   const { id, setId } = useStore();
   const [item, setItem] = useState<Product | null>(null);
   const router = useRouter();
-  /*   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); */
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [imageError, setImageError] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const open = Boolean(anchorEl);
@@ -144,17 +150,50 @@ const ContentItem = () => {
         })
         .then((data) => {
           setItem(data);
-        });
-
-      /*    .finally(() => {
+        })
+        .catch((error) => {
+          console.error("Error fetching data: ", error);
+        })
+        .finally(() => {
           setLoading(false);
-        }); */
+        });
     }
   }, [id]);
 
-  /*   if (loading) {
-    return <p>Carregando...</p>;
-  } */
+  if (loading) {
+    return (
+      <div style={{}}>
+        <p
+          style={{
+            padding: "20px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Skeleton
+            variant="rectangular"
+            animation="wave"
+            width={"100%"}
+            height={500}
+          />
+        </p>
+        <p
+          style={{
+            padding: "20px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Skeleton
+            variant="rectangular"
+            animation="wave"
+            width={"100%"}
+            height={60}
+          />
+        </p>
+      </div>
+    );
+  }
 
   /*   if (error) {
     return <p>Ocorreu um erro: {error}</p>;

@@ -130,9 +130,18 @@ const ContentPost = () => {
     image: "",
     id: "",
   });
+
+  type PostType = {
+    id: string;
+    // Outras propriedades do post, como createdAt, comments, etc.
+  };
   const [postStates, setPostStates] = useState<{ [key: string]: PostState }>(
     {}
   );
+  const [commentCounts, setCommentCounts] = useState<{ [key: string]: number }>(
+    {}
+  );
+
   const postStatesInit: { [key: string]: PostState } = {};
 
   const homePostStyle = {
@@ -169,6 +178,12 @@ const ContentPost = () => {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         setPosts(sortedPosts);
+        const counts: { [key: string]: number } = {};
+
+        sortedPosts.forEach((post) => {
+          counts[post.id] = post.comments.length;
+        });
+        setCommentCounts(counts);
       }
     };
     fetchData();
@@ -405,7 +420,6 @@ const ContentPost = () => {
                           style={{
                             color: "var(--gray-gray-300, #75767D)",
                             fontSize: isMobile ? "12px" : "14px",
-
                             fontWeight: 500,
                             margin: 0,
                             padding: 0,
@@ -414,10 +428,10 @@ const ContentPost = () => {
                           <img
                             src={tempoIcon.src}
                             style={{
-                              width: isMobile ? "20px" : "20px",
-                              height: isMobile ? "20px" : "20px",
+                              width: isMobile ? "15px" : "20px",
+                              height: isMobile ? "15px" : "20px",
                               marginRight: "5px",
-                              marginBottom: "-5px",
+                              marginBottom: isMobile ? "-3px" : "-5px",
                             }}
                           />
                           {getTimeSince(post.createdAt)}
@@ -555,9 +569,7 @@ const ContentPost = () => {
                         display: "flex",
                         alignItems: "center",
                         marginLeft: isMobile ? "40px" : "",
-
                         color: "#b4b4b6",
-
                         fontSize: "12px",
                       }}
                     >
@@ -571,7 +583,25 @@ const ContentPost = () => {
                           color: "#b4b4b6",
                         }}
                       />
-                      Comentários
+                      Comentários{" "}
+                      <span
+                        style={{
+                          width: "27px",
+                          height: "14px",
+                          padding: "2px, 6px, 2px, 6px",
+                          borderRadius: "16px",
+                          display: "flex",
+                          justifyContent: "center",
+                          background: "#27282F",
+                          color: "white",
+                          fontSize: "10px",
+                          position: "relative",
+                          left: isMobile ? "3px" : "12px",
+                          marginRight: "5px",
+                        }}
+                      >
+                        {commentCounts[post.id] || 0}
+                      </span>
                     </span>
                     <div className={styles.commentsBadge}>
                       <span className={styles.commentsNumber}></span>
@@ -590,7 +620,6 @@ const ContentPost = () => {
                         display: "flex",
                         alignItems: "center",
                         color: "#b4b4b6",
-
                         fontSize: "12px",
                       }}
                     >
@@ -666,13 +695,23 @@ const ContentPost = () => {
 
                   {post.comments.length > 0 ? (
                     <div className={styles.everyComments}>
-                      <span className={styles.everyCommentsText}>
+                      <span
+                        className={styles.everyCommentsText}
+                        style={{
+                          color: "#b4b4b6",
+                        }}
+                      >
                         Todos os comentários
                       </span>
                     </div>
                   ) : (
                     <div className={styles.everyComments}>
-                      <span className={styles.everyCommentsText}>
+                      <span
+                        className={styles.everyCommentsText}
+                        style={{
+                          color: "#b4b4b6",
+                        }}
+                      >
                         Não há comentários ainda.
                       </span>
                     </div>

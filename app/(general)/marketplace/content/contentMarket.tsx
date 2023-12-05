@@ -89,7 +89,6 @@ const ContentMarket = () => {
     marginLeft: "-4%",
   };
 
-  // No topo do seu componente, defina os estados para erros
   const [errors, setErrors] = useState({
     name: "",
     description: "",
@@ -125,6 +124,12 @@ const ContentMarket = () => {
         name: "Nome é obrigatório.",
       }));
       formIsValid = false;
+    } else if (productName.trim().length > 255) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        name: "Nome deve ter no máximo 255 caracteres.",
+      }));
+      formIsValid = false;
     }
 
     // Validação da descrição
@@ -132,6 +137,12 @@ const ContentMarket = () => {
       setErrors((prevErrors) => ({
         ...prevErrors,
         description: "Descrição é obrigatória.",
+      }));
+      formIsValid = false;
+    } else if (productDescription.trim().length > 255) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        description: "Descrição deve ter no máximo 255 caracteres.",
       }));
       formIsValid = false;
     }
@@ -145,7 +156,16 @@ const ContentMarket = () => {
       }));
       formIsValid = false;
     } else if (isNaN(priceNumber) || priceNumber <= 0) {
-      setErrors((prevErrors) => ({ ...prevErrors, price: "Preço inválido." }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        price: "Preço inválido.",
+      }));
+      formIsValid = false;
+    } else if (priceNumber > 99999999.99) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        price: "Preço deve ser menor que 99999999.99.",
+      }));
       formIsValid = false;
     }
 
