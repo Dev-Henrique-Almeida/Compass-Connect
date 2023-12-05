@@ -192,7 +192,8 @@ export default function ContentHome() {
   useEffect(() => {
     const fetchData = async () => {
       const items = await getMarketItems();
-      setMarketItems(items);
+      const availableItems = items.filter((item) => !item.vendido); // Filtrando itens não vendidos
+      setMarketItems(availableItems);
     };
     fetchData();
   }, []);
