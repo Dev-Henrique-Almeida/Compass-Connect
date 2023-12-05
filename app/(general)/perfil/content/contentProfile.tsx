@@ -190,32 +190,18 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     }
     /* Validações para a profissao */
 
-    if (!url) {
+    const pattern = /\.(jpeg|jpg|png|webp|gif)$/;
+    if (!pattern.test(url)) {
       setErrors((errors) => ({
         ...errors,
-        url: "Url da imagem é obrigatória. ",
+        url: "A URL deve ser de uma imagem válida (jpeg, jpg, png, webp, gif).",
       }));
       isValid = false;
-    } else {
-      const pattern = /\.(jpeg|jpg|png|webp|gif)$/;
-      if (!pattern.test(url)) {
-        setErrors((errors) => ({
-          ...errors,
-          url: "A URL deve ser de uma imagem válida (jpeg, jpg, png, webp, gif).",
-        }));
-        isValid = false;
-      }
     }
 
     /* Validações para a profissao */
 
-    if (!cargo) {
-      setErrors((errors) => ({
-        ...errors,
-        cargo: "Cargo é obrigatório. ",
-      }));
-      isValid = false;
-    } else if (cargo.length > 255) {
+    if (cargo.length > 255) {
       setErrors((errors) => ({
         ...errors,
         cargo: "Cargo não pode ter mais de 255 caracteres. ",
@@ -224,13 +210,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     }
 
     /* Validações para o genero */
-    if (!sexo) {
-      setErrors((errors) => ({
-        ...errors,
-        sexo: "Gênero é obrigatório. ",
-      }));
-      isValid = false;
-    } else if (sexo.length > 255) {
+    if (sexo.length > 255) {
       setErrors((errors) => ({
         ...errors,
         sexo: "Gênero não pode ter mais de 255 caracteres. ",
@@ -239,13 +219,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     }
 
     /* Validações para o nome */
-    if (!nome) {
-      setErrors((errors) => ({
-        ...errors,
-        nome: "Nome é obrigatório. ",
-      }));
-      isValid = false;
-    } else if (nome.length > 255) {
+    if (nome.length > 255) {
       setErrors((errors) => ({
         ...errors,
         nome: "Nome não pode ter mais de 255 caracteres. ",
@@ -254,13 +228,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     }
 
     /* Validações para o endereço */
-    if (!endereco) {
-      setErrors((errors) => ({
-        ...errors,
-        endereco: "Endereço é obrigatório. ",
-      }));
-      isValid = false;
-    } else if (endereco.length > 255) {
+    if (endereco.length > 255) {
       setErrors((errors) => ({
         ...errors,
         endereco: "Endereço não pode ter mais de 255 caracteres. ",
@@ -269,13 +237,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     }
 
     /* Validações para o telefone */
-    if (!telefone) {
-      setErrors((errors) => ({
-        ...errors,
-        telefone: "Telefone é obrigatório. ",
-      }));
-      isValid = false;
-    } else if (telefone.length > 255) {
+    if (telefone.length > 255) {
       setErrors((errors) => ({
         ...errors,
         telefone: "Telefone não pode ter mais de 255 caracteres. ",
@@ -285,28 +247,20 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
 
     /* Validações para a data de nascimento */
     let formattedDate = "";
-    if (!nascimento) {
+
+    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = nascimento.match(dateRegex);
+
+    if (!match) {
       setErrors((errors) => ({
         ...errors,
-        nascimento: "Data de Nascimento é obrigatória.",
+        nascimento: "Por favor, insira uma data válida no formato dd/mm/aaaa.",
       }));
       isValid = false;
     } else {
-      const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-      const match = nascimento.match(dateRegex);
+      const [, day, month, year] = match;
 
-      if (!match) {
-        setErrors((errors) => ({
-          ...errors,
-          nascimento:
-            "Por favor, insira uma data válida no formato dd/mm/aaaa.",
-        }));
-        isValid = false;
-      } else {
-        const [, day, month, year] = match;
-
-        formattedDate = `${year}-${month}-${day}`;
-      }
+      formattedDate = `${year}-${month}-${day}`;
     }
 
     // Se passar por todas as validações, é enviado um PUT, para a API

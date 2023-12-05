@@ -699,7 +699,8 @@ const ContentMyPosts = () => {
                       {postStates[post.id]?.hasLiked ? "Curtiu" : "Curtir"} {""}
                       <div
                         style={{
-                          width: "27px",
+                          width: isMobile ? "20px" : "27px",
+
                           height: "14px",
                           padding: "2px, 6px, 2px, 6px",
                           borderRadius: "16px",
@@ -712,7 +713,7 @@ const ContentMyPosts = () => {
                           fontSize: "10px",
                           position: "relative",
                           top: "-15px",
-                          left: "45px",
+                          left: isMobile ? "38px" : "45px",
                         }}
                       >
                         {postStates[post.id]?.hasLiked
@@ -750,7 +751,8 @@ const ContentMyPosts = () => {
                       Comentários{" "}
                       <span
                         style={{
-                          width: "27px",
+                          width: isMobile ? "20px" : "27px",
+
                           height: "14px",
                           padding: "2px, 6px, 2px, 6px",
                           borderRadius: "16px",
