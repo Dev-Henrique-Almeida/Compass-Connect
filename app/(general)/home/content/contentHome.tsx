@@ -267,6 +267,14 @@ export default function ContentHome() {
     router.push(`/perfil/id=${userId}`);
   };
 
+  // Função para lidar com o clique no item do marketplace
+  const handleMarketItemClick = (productId: string) => {
+    // Navega para a página do item no marketplace
+    setId(productId);
+
+    router.push(`/marketplace/id=${productId}`);
+  };
+
   // Função para funcionar o input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -483,6 +491,10 @@ export default function ContentHome() {
                   style={{
                     display: "flex",
                     alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    handleMarketItemClick(item.id);
                   }}
                 >
                   <Avatar
@@ -497,7 +509,10 @@ export default function ContentHome() {
                   <div className={styles.productInfo}>
                     <Typography>{item.name}</Typography>
                     <Typography className={styles.productPrice}>
-                      R$ {item.price.toFixed(2).replace(".", ",")}
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(item.price)}
                     </Typography>
                   </div>
                 </AccordionDetails>
