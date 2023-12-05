@@ -462,6 +462,7 @@ const ContentIdPosts = () => {
                         width: "16px",
                         height: "16px",
                         marginRight: "5px",
+                        marginTop: "-15px",
                       }}
                       className={
                         postStates[post.id]?.hasLiked
@@ -478,11 +479,29 @@ const ContentIdPosts = () => {
                         postStates[post.id]?.hasLiked ? styles.likedText : ""
                       }`}
                     >
-                      {postStates[post.id]?.hasLiked ? "Curtiu" : "Curtir"} (
-                      {postStates[post.id]?.hasLiked
-                        ? Number(post.likes) + 1
-                        : post.likes}
-                      )
+                      {postStates[post.id]?.hasLiked ? "Curtiu" : "Curtir"} {""}
+                      <div
+                        style={{
+                          width: "27px",
+                          height: "14px",
+                          padding: "2px, 6px, 2px, 6px",
+                          borderRadius: "16px",
+                          display: "flex",
+                          justifyContent: "center",
+                          background: postStates[post.id]?.hasLiked
+                            ? "#e9b425"
+                            : "#A1A3A7",
+                          color: "white",
+                          fontSize: "10px",
+                          position: "relative",
+                          top: "-15px",
+                          left: "45px",
+                        }}
+                      >
+                        {postStates[post.id]?.hasLiked
+                          ? Number(post.likes) + 1
+                          : post.likes}
+                      </div>
                     </span>
                   </div>
 

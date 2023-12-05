@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import useStore from "@/store/store";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: string;
@@ -63,13 +64,15 @@ const getMarketItems = async (): Promise<Product[]> => {
 };
 
 const ContentMarket = () => {
-  const { modalOpen } = useStore();
+  const { modalOpen, setId } = useStore();
   const [marketItems, setMarketItems] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productImage, setProductImage] = useState("");
+  const router = useRouter();
+
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
@@ -93,6 +96,14 @@ const ContentMarket = () => {
     price: "",
     image: "",
   });
+
+  // Função para lidar com o clique no item do marketplace
+  const handleMarketItemClick = (productId: string) => {
+    // Navega para a página do item no marketplace
+    setId(productId);
+
+    router.push(`/marketplace/id=${productId}`);
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -395,6 +406,7 @@ const ContentMarket = () => {
                         R$ {product.price.toFixed(2).replace(".", ",")}
                       </Typography>
                       <Link
+                        href={`/marketplace/id=${product.id}`}
                         style={{
                           width: "150px",
                           borderRadius: "24px",
@@ -411,7 +423,7 @@ const ContentMarket = () => {
                             ? "#FE2E05"
                             : "var(--gray-gray-200, #A1A3A7)",
                         }}
-                        href="/marketItem"
+                        onClick={() => handleMarketItemClick(product.id)}
                       >
                         {product.vendido ? "Já vendido!" : "Ainda não vendido"}
                       </Link>

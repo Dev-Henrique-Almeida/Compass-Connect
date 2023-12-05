@@ -1,0 +1,91 @@
+.itemDetails {
+  text-align: center;
+  justify-content: center;
+  width: 80%;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+  margin: auto;
+}
+
+.imageContainer {
+  margin: 20px 0;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.itemInfo {
+  text-align: left;
+}
+
+.itemTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.itemDescription {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.itemPrice {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffa500;
+}
+
+@media (max-width: 767px) {
+  .buttonContainer {
+    z-index: 0;
+    margin-top: auto;
+    position: relative;
+    margin-top: 5%;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+}
+
+.buttonRegister {
+  display: flex;
+  padding: 16px 24px;
+  align-items: flex-start;
+  border-radius: 46px;
+  border: 1px solid var(--orange, #fe2e05);
+  background: var(
+    --gradient-button,
+    linear-gradient(180deg, #ad2d14 0%, #f42e07 100%)
+  );
+}
+
+.addButtonMargin {
+  margin: 30px 0px;
+}
+
+.avatarContainer {
+  display: flex;
+}
+
+.postDate {
+  display: flex;
+}
+
+.timerIcon {
+  margin-top: 3px;
+  margin-right: 6px;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+}
