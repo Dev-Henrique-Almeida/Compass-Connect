@@ -3,7 +3,7 @@ import MyIdPerfil from "./content/contentCard";
 
 const IdPerfil = () => {
   return (
-    <div style={{ background: "linear-gradient(0deg, #1E1F23, #2E2F36)" }}>
+    <div style={{ background: "#17181C" }}>
       <MyIdPerfil />
     </div>
   );

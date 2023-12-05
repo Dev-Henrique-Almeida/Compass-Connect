@@ -6,6 +6,9 @@ import ShareIcon from "@mui/icons-material/Share";
 import tempoIcon from "@/public/icons/timing.png";
 import defaultPost from "@/public/defaultImagePost.png";
 import defaultPostMobile from "@/public/defaultPostMobile.png";
+import likeIcon from "@/public/icons/likeIcon.png";
+import commentIcon from "@/public/icons/commentIcon.png";
+import shareIcon from "@/public/icons/shareIcon.png";
 
 import {
   Avatar,
@@ -161,7 +164,11 @@ const ContentPost = () => {
     const fetchData = async () => {
       const fetchedPosts = await getPosts();
       if (Array.isArray(fetchedPosts) && fetchedPosts.length > 0) {
-        setPosts(fetchedPosts);
+        const sortedPosts = fetchedPosts.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setPosts(sortedPosts);
       }
     };
     fetchData();
@@ -484,12 +491,17 @@ const ContentPost = () => {
                     }}
                     onClick={() => handleLikeClick(post.id)}
                   >
-                    <ThumbUpIcon
+                    <img
+                      src={likeIcon.src}
+                      alt="likeIcon"
                       style={{
                         width: "16px",
                         height: "16px",
-                        marginRight: "5px",
-                        marginTop: "-15px",
+                        marginRight: "8px",
+                        marginTop: "-19px",
+                        filter: postStates[post.id]?.hasLiked
+                          ? "brightness(0) saturate(100%) invert(73%) sepia(62%) saturate(629%) hue-rotate(350deg) brightness(98%) contrast(86%)"
+                          : "none",
                       }}
                       className={
                         postStates[post.id]?.hasLiked
@@ -542,16 +554,21 @@ const ContentPost = () => {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        color: "white",
+                        marginLeft: isMobile ? "40px" : "",
+
+                        color: "#b4b4b6",
+
                         fontSize: "12px",
                       }}
                     >
-                      <ChatIcon
+                      <img
+                        src={commentIcon.src}
+                        alt="commentIcon"
                         style={{
                           width: "16px",
                           height: "16px",
                           marginRight: "5px",
-                          color: "white",
+                          color: "#b4b4b6",
                         }}
                       />
                       Comentários
@@ -572,16 +589,19 @@ const ContentPost = () => {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        color: "white",
+                        color: "#b4b4b6",
+
                         fontSize: "12px",
                       }}
                     >
-                      <ShareIcon
+                      <img
+                        src={shareIcon.src}
+                        alt="shareIcon"
                         style={{
                           width: "16px",
                           height: "16px",
                           marginRight: "5px",
-                          color: "white",
+                          color: "#b4b4b6",
                         }}
                       />
                       Compartilhar

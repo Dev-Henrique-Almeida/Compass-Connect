@@ -102,7 +102,7 @@ export default function MyIdPerfil() {
               height: isMobile ? 380 : 400,
               width: isMobile ? 380 : "100%",
               border: "2px solid #97979b",
-              background: "linear-gradient(0deg, #1E1F23, #2E2F36)",
+              background: "#17181C",
             }}
             elevation={5}
           >

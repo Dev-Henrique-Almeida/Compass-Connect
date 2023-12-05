@@ -138,9 +138,9 @@ const ContentInfo = () => {
 
               marginLeft: isMobile ? "" : cardMarginLeft,
               border: "2px solid #97979b",
-              color: "white",
+              color: "#b4b4b6",
 
-              background: "linear-gradient(0deg, #1E1F23, #2E2F36)",
+              background: "#17181C",
             }}
             elevation={5}
           >
@@ -280,7 +280,7 @@ const ContentInfo = () => {
                 sx={{
                   fontSize: 16,
                   fontWeight: "50",
-                  marginLeft: isMobile ? 10 : 60,
+                  marginLeft: isMobile ? 8 : 60,
                 }}
               >
                 Followers

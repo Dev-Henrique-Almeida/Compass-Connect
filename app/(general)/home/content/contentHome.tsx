@@ -578,7 +578,7 @@ export default function ContentHome() {
                 setIsGalleryModalOpen(false);
               }}
             >
-              Definir URL da imagem
+              Salvar
             </Button>
           </Box>
         </Fade>
@@ -612,7 +612,7 @@ export default function ContentHome() {
               component="h2"
               sx={{ color: "white", display: "flex", justifyContent: "center" }}
             >
-              Definir localização
+              Salvar
             </Typography>
 
             <TextField
@@ -653,7 +653,7 @@ export default function ContentHome() {
               fullWidth
               onClick={handleSetLocation}
             >
-              Definir localização
+              Salvar
             </Button>
           </Box>
         </Fade>

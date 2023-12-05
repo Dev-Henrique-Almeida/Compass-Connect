@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styles from "./contentPost.module.scss";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ChatIcon from "@mui/icons-material/Chat";
-import ShareIcon from "@mui/icons-material/Share";
 import tempoIcon from "@/public/icons/timing.png";
 import defaultPost from "@/public/defaultImagePost.png";
 import defaultPostMobile from "@/public/defaultPostMobile.png";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import deletarIcon from "@/public/icons/trash.png";
 import editarIcon from "@/public/icons/pencil.png";
+import commentIcon from "@/public/icons/commentIcon.png";
+import shareIcon from "@/public/icons/shareIcon.png";
+import likeIcon from "@/public/icons/likeIcon.png";
 
 import {
   Avatar,
@@ -184,7 +184,11 @@ const ContentMyPosts = () => {
         const userPosts = fetchedPosts.filter(
           (post) => post.author.id === userId
         ); // Filtrar os posts pelo ID do autor
-        setPosts(userPosts);
+        const sortedPosts = userPosts.sort(
+          (a: Post, b: Post) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setPosts(sortedPosts);
       }
     };
     fetchData();
@@ -652,16 +656,21 @@ const ContentMyPosts = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      color: "white",
+                      color: "#b4b4b6",
                     }}
                     onClick={() => handleLikeClick(post.id)}
                   >
-                    <ThumbUpIcon
+                    <img
+                      src={likeIcon.src}
+                      alt="likeIcon"
                       style={{
                         width: "16px",
                         height: "16px",
-                        marginRight: "5px",
-                        marginTop: "-15px",
+                        marginRight: "8px",
+                        marginTop: "-19px",
+                        filter: postStates[post.id]?.hasLiked
+                          ? "brightness(0) saturate(100%) invert(73%) sepia(62%) saturate(629%) hue-rotate(350deg) brightness(98%) contrast(86%)"
+                          : "none",
                       }}
                       className={
                         postStates[post.id]?.hasLiked
@@ -714,16 +723,19 @@ const ContentMyPosts = () => {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        color: "white",
+                        color: "#b4b4b6",
                         fontSize: "12px",
+                        marginLeft: isMobile ? "40px" : "",
                       }}
                     >
-                      <ChatIcon
+                      <img
+                        src={commentIcon.src}
+                        alt="commentIcon"
                         style={{
                           width: "16px",
                           height: "16px",
                           marginRight: "5px",
-                          color: "white",
+                          color: "#b4b4b6",
                         }}
                       />
                       Comentários
@@ -744,16 +756,19 @@ const ContentMyPosts = () => {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        color: "white",
+                        color: "#b4b4b6",
+
                         fontSize: "12px",
                       }}
                     >
-                      <ShareIcon
+                      <img
+                        src={shareIcon.src}
+                        alt="shareIcon"
                         style={{
                           width: "16px",
                           height: "16px",
                           marginRight: "5px",
-                          color: "white",
+                          color: "#b4b4b6",
                         }}
                       />
                       Compartilhar

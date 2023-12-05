@@ -5,7 +5,7 @@ const Perfil = () => {
   return (
     <div
       style={{
-        background: "linear-gradient(0deg, #1E1F23, #2E2F36)",
+        background: "#17181C",
         height: "250vh",
       }}
     >
