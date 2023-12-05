@@ -1,6 +1,6 @@
 <div>
     <h1>Challenge 2 - Compass Video</h1>
-    <img src="@/public/desktop-logo.png"/>
+    <img src="./public/desktop-logo.png"/>
 </div>
 
 <h1>Descrição do desafio:</h1>
