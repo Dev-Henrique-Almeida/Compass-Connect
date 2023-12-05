@@ -249,7 +249,7 @@ const ContentMarket = () => {
   );
 
   const maxDescription = (desc: string) => {
-    return desc.length > 220 ? `${desc.substring(0, 220)}...` : desc;
+    return desc.length > 190 ? `${desc.substring(0, 190)}...` : desc;
   };
 
   useEffect(() => {

@@ -132,6 +132,21 @@ const ContentItem = () => {
     }
   };
 
+  // Função para poder retornar para tela anterior
+  useEffect(() => {
+    const handleBackButtonEvent = (event: MouseEvent) => {
+      if (event.button === 3 || event.button === 4) {
+        router.back();
+      }
+    };
+
+    window.addEventListener("mouseup", handleBackButtonEvent);
+
+    return () => {
+      window.removeEventListener("mouseup", handleBackButtonEvent);
+    };
+  }, [router]);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -487,7 +502,7 @@ const ContentItem = () => {
               style={{
                 position: isMobile ? "relative" : "absolute",
 
-                top: isMobile ? "0" : "96.8%",
+                top: isMobile ? "0" : "94.8%",
 
                 left: isMobile ? "0" : "60%",
               }}
@@ -511,7 +526,7 @@ const ContentItem = () => {
               className={styles.avatarContainer}
               style={{
                 position: isMobile ? "relative" : "absolute",
-                top: isMobile ? "0" : "102%",
+                top: isMobile ? "0" : "100%",
                 left: isMobile ? "0" : "60%",
               }}
             >
