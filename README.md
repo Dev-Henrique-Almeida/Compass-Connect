@@ -1,5 +1,5 @@
 <div>
-    <h1>Challenge 2 - Compass Video</h1>
+    <h1>Desafio 3 - Social Compass</h1>
     <img src="./public/desktop-logo.png"/>
 </div>
 
