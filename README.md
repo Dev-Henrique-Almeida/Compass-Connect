@@ -91,7 +91,28 @@ Todos os campos são opcionais e possuem um máximo de 255 caracteres:
 <h1>Requisitos OPCIONAIS:</h1>
 
 <details>
-  <summary>1 - Página Detalhes do Item (Opcional, conta como bônus) 
+  <summary>1 - Página Marketplace (Opcional, conta como bônus)
+</summary>
+  </br>
+  
+ O conteúdo principal da página é uma listagem de itens cadastrados à venda. Todos os itens possuem nome, descrição, preço, imagem (opcional, alguns não terão, deve ser utilizada alguma imagem padrão nestes casos) e o status da venda, vendido ou não. 
+Ao clicar em um item, deve redirecionar para a página de detalhes. 
+Pode ser utilizada paginação na listagem de itens (opcional). 
+</br>
+ Ao clicar em Adicionar Item, temos os seguintes campos: 
+ - Nome do item (Obrigatório, max 255 caracteres). 
+ - Descrição (Obrigatório, max 255 caracteres). 
+ - Preço (Obrigatório, number, max 99999999.99). 
+ - Imagem (Opcional, deve-se enviar convertida em uma string base64 ou link da imagem). 
+ 
+1. Ao clicar em cancelar, fechar a modal.
+2. Ao clicar em salvar, enviar as informações para o endpoint de criar item.
+
+
+
+</details>
+<details>
+  <summary>2 - Página Detalhes do Item (Opcional, conta como bônus) 
 </summary>
   </br>
   
@@ -160,4 +181,4 @@ npm install
 npm run dev
 ```
 
-Após isso, o projeto deve rodar e ser aberto no link: [Projeto](http://localhost:3000), onde será aberto um navegador para a visualização do projeto.
+Após isso, o projeto deve rodar e ser aberto no link: [Projeto](http://localhost:3000), onde será aberto uma aba no navegador para a visualização do projeto.
